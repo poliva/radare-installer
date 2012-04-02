@@ -18,8 +18,6 @@ package com.ice.tar;
 import java.io.*;
 import javax.activation.*;
 
-import android.util.Log;
-
 /**
  * The TarArchive class implements the concept of a
  * tar archive. A tar archive is a series of entries, each of
