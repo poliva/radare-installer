@@ -581,6 +581,23 @@ implements	Cloneable
 		}
 
 	/**
+	 * Return whether or not this entry represents a symbolic link.
+	 *
+	 * @return True if this entry is a symbolic link.
+	 */
+	public boolean
+	isSymbolicLink()
+		{
+		if ( this.header != null )
+			{
+			if ( this.header.linkFlag == TarHeader.LF_SYMLINK )
+				return true;
+			}
+
+		return false;
+		}
+
+	/**
 	 * Fill in a TarHeader with information from a File.
 	 *
 	 * @param hdr The TarHeader to fill in.

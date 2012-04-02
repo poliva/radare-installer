@@ -18,6 +18,7 @@ package com.ice.tar;
 import java.io.*;
 import javax.activation.*;
 
+import android.util.Log;
 
 /**
  * The TarArchive class implements the concept of a
@@ -512,7 +513,20 @@ TarArchive extends Object
 
 		File destFile = new File( destDir, name );
 
-		if ( entry.isDirectory() )
+		if ( entry.isSymbolicLink() )
+			{
+				try {
+					Process process = Runtime.getRuntime().exec( new String[] { "ln", "-s", destDir+name, entry.header.linkName.toString() } );
+					process.waitFor();
+					process.destroy();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		else if ( entry.isDirectory() )
 			{
 			if ( ! destFile.exists() )
 				{
