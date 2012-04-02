@@ -18,6 +18,8 @@ package com.ice.tar;
 import java.io.*;
 import javax.activation.*;
 
+import org.radare.installer.*;
+
 /**
  * The TarArchive class implements the concept of a
  * tar archive. A tar archive is a series of entries, each of
@@ -514,7 +516,14 @@ TarArchive extends Object
 		if ( entry.isSymbolicLink() )
 			{
 				try {
-					Process process = Runtime.getRuntime().exec( new String[] { "ln", "-s", destDir+name, entry.header.linkName.toString() } );
+					Runtime rt = Runtime.getRuntime();
+					Process process = rt.exec("sh");
+					String command = "ln -s " + destDir+name + " " + entry.header.linkName.toString();
+					DataOutputStream os = new DataOutputStream(process.getOutputStream()); 
+					os.writeBytes(command + "\n");
+					os.flush();
+					os.writeBytes("exit\n");
+					os.flush();
 					process.waitFor();
 					process.destroy();
 				} catch (IOException e) {
