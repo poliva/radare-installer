@@ -74,7 +74,6 @@ TarArchive extends Object
 	protected TarTransFileTyper		transTyper;
 	protected TarProgressDisplay	progressDisplay;
 
-				private static final String TAG = "RADARE";
 
 	/**
 	 * The InputStream based constructors create a TarArchive for the
