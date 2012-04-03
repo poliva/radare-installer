@@ -105,6 +105,7 @@ public class MainActivity extends Activity {
 
 						// remove old traces of previous r2 install
 						exec("rm -r /data/data/org.radare.installer/radare2/");
+						exec("rm -r /data/rata/org.radare.installer/files/");
 						exec("rm /data/data/org.radare.installer/radare2-android.tar");
 						exec("rm /data/data/org.radare.installer/radare2-android.tar.gz");
 
