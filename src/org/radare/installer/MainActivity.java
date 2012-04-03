@@ -139,7 +139,7 @@ public class MainActivity extends Activity {
 								// remove old path
 								exec("su -c 'rm -r /data/local/radare2'");
 								// remove old symlinks in case they exist in old location
-								exec("su -c 'rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2'");
+								exec("su -c 'rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc'");
 
 								// show output for the first link, in case there's any error with su
 								output = exec("su -c 'ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1'");
