@@ -18,7 +18,6 @@ package com.ice.tar;
 import java.io.*;
 import javax.activation.*;
 
-import org.radare.installer.*;
 
 /**
  * The TarArchive class implements the concept of a
@@ -75,6 +74,7 @@ TarArchive extends Object
 	protected TarTransFileTyper		transTyper;
 	protected TarProgressDisplay	progressDisplay;
 
+				private static final String TAG = "RADARE";
 
 	/**
 	 * The InputStream based constructors create a TarArchive for the
@@ -518,14 +518,13 @@ TarArchive extends Object
 				try {
 					Runtime rt = Runtime.getRuntime();
 					Process process = rt.exec("sh");
-					String command = "ln -s " + destDir+name + " " + entry.header.linkName.toString();
 					DataOutputStream os = new DataOutputStream(process.getOutputStream()); 
+					String command = "ln -s " + entry.header.linkName.toString() + " " + destDir+name;
 					os.writeBytes(command + "\n");
 					os.flush();
 					os.writeBytes("exit\n");
 					os.flush();
 					process.waitFor();
-					process.destroy();
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				} catch (InterruptedException e) {
