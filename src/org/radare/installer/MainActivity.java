@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
 
 					if (checkHg.isChecked()) {
 						output("Download: unstable/development version from nightly build.\nNote: this version can be broken!\n");
-						hg = "hg";
+						hg = "unstable";
 					} else {
 						output("Download: stable version\n");
 						hg = "stable";
