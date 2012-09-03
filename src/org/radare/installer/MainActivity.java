@@ -98,9 +98,9 @@ public class MainActivity extends Activity {
 					}
 
 					RootTools.useRoot = false;
-					float space = (float) (RootTools.getSpace("/data") / 1000);
+					long space = (RootTools.getSpace("/data") / 1000);
 					output("Free space in /data partition: "+ space +" MB\n");
-					if (space == 0) {
+					if (space <= 0) {
 						output("Warning: could not check space in /data partition, installation can fail!\n");
 					} else {
 						if (space < 10) {
@@ -140,10 +140,9 @@ public class MainActivity extends Activity {
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
 
 						boolean isRooted = false;
-        					//isRooted = detectSuBinaryInPath();
         					isRooted = RootTools.isAccessGiven();
 
-						boolean simlinksCreated = false;
+						boolean symlinksCreated = false;
 						if (checkBox.isChecked()) {
 							if(!isRooted) {
 output("\nCould not create xbin symlinks, do you have root?\n");
@@ -151,18 +150,19 @@ output("\nCould not create xbin symlinks, do you have root?\n");
 
 								RootTools.useRoot = true;
 
-								output("\nCreating xbin symlinks... ");
+								output("\nCreating xbin symlinks...\n");
 								RootTools.remount("/system", "rw");
 								// remove old path
 								exec("rm -r /data/local/radare2");
 								// remove old symlinks in case they exist in old location
 								exec("rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc");
 
-								// show output for the first link, in case there's any error with su
-								output = exec("ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1");
-								output(output);
+								if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
 
-								if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/")) {
+									// show output for the first link, in case there's any error with su
+									output = exec("ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1");
+									output(output);
+
 									String file;
 									File folder = new File("/data/data/org.radare.installer/radare2/bin/");
 									File[] listOfFiles = folder.listFiles(); 
@@ -170,29 +170,29 @@ output("\nCould not create xbin symlinks, do you have root?\n");
 										if (listOfFiles[i].isFile()) {
 											file = listOfFiles[i].getName();
 											exec("ln -s /data/data/org.radare.installer/radare2/bin/" + file + " /system/xbin/" + file);
+											output("linking /system/xbin/" + file + "\n");
 										}
 									}
 								}
 
 								RootTools.remount("/system", "ro");
-								File radarelink = new File("/system/xbin/radare2");
-								if (radarelink.exists()) {
+								if (RootTools.exists("/system/xbin/radare2")) {
 									output("done\n");
-									simlinksCreated = true;
+									symlinksCreated = true;
 								} else {
 									output("\nFailed to create xbin symlinks\n");
-									simlinksCreated = false;
+									symlinksCreated = false;
 								}
 
 								RootTools.useRoot = false;
 							}
 						}
 
-						File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
-						if (!radarebin.exists()) {
+						RootTools.useRoot = false;
+						if (!RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
 							output("\n\nsomething went wrong during installation :(\n");
 						} else {
-							if (simlinksCreated == false) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
+							if (symlinksCreated == false) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
 							output("\nTesting installation:\n\n$ radare2 -v\n");
 							output = exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");
 							output(output);
