@@ -34,6 +34,7 @@ import android.content.Context;
 import android.os.Build;
 
 import com.ice.tar.*;
+import com.stericson.RootTools.*;
 
 public class MainActivity extends Activity {
 	
@@ -96,6 +97,17 @@ public class MainActivity extends Activity {
 						if (!checkHg.isChecked()) url = "http://x90.es/radare2tar";
 					}
 
+					RootTools.useRoot = false;
+					float space = (float) (RootTools.getSpace("/data") / 1000);
+					output("Free space in /data partition: "+ space +" MB\n");
+					if (space == 0) {
+						output("Warning: could not check space in /data partition, installation can fail!\n");
+					} else {
+						if (space < 10) {
+							output("Warning: low space in /data partition, installation can fail!\n");
+						}
+					}
+
 					output("Downloading radare2-android... please wait\n");
 					//output("URL: "+url+"\n");
 
@@ -103,6 +115,7 @@ public class MainActivity extends Activity {
 						output("\nCan't connect to download server. Check that internet connection is available.\n");
 					} else {
 
+						RootTools.useRoot = false;
 						// remove old traces of previous r2 install
 						exec("rm -r /data/data/org.radare.installer/radare2/");
 						exec("rm -r /data/rata/org.radare.installer/files/");
@@ -127,36 +140,41 @@ public class MainActivity extends Activity {
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
 
 						boolean isRooted = false;
-        					isRooted = detectSuBinaryInPath();
+        					//isRooted = detectSuBinaryInPath();
+        					isRooted = RootTools.isAccessGiven();
 
 						boolean simlinksCreated = false;
 						if (checkBox.isChecked()) {
 							if(!isRooted) {
-								output("\nCould not create xbin symlinks, do you have root?\n");
+output("\nCould not create xbin symlinks, do you have root?\n");
 							} else { // device is rooted
 
+								RootTools.useRoot = true;
+
 								output("\nCreating xbin symlinks... ");
-								exec("su -c 'mount -o remount -o rw /system'");
+								RootTools.remount("/system", "rw");
 								// remove old path
-								exec("su -c 'rm -r /data/local/radare2'");
+								exec("rm -r /data/local/radare2");
 								// remove old symlinks in case they exist in old location
-								exec("su -c 'rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc'");
+								exec("rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc");
 
 								// show output for the first link, in case there's any error with su
-								output = exec("su -c 'ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1'");
+								output = exec("ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1");
 								output(output);
 
-								String file;
-								File folder = new File("/data/data/org.radare.installer/radare2/bin/");
-								File[] listOfFiles = folder.listFiles(); 
-								for (int i = 0; i < listOfFiles.length; i++) {
-									if (listOfFiles[i].isFile()) {
-										file = listOfFiles[i].getName();
-										exec("su -c 'ln -s /data/data/org.radare.installer/radare2/bin/" + file + " /system/xbin/" + file + "'");
+								if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/")) {
+									String file;
+									File folder = new File("/data/data/org.radare.installer/radare2/bin/");
+									File[] listOfFiles = folder.listFiles(); 
+									for (int i = 0; i < listOfFiles.length; i++) {
+										if (listOfFiles[i].isFile()) {
+											file = listOfFiles[i].getName();
+											exec("ln -s /data/data/org.radare.installer/radare2/bin/" + file + " /system/xbin/" + file);
+										}
 									}
 								}
 
-								exec("su -c 'mount -o remount -o ro /system'");
+								RootTools.remount("/system", "ro");
 								File radarelink = new File("/system/xbin/radare2");
 								if (radarelink.exists()) {
 									output("done\n");
@@ -165,6 +183,8 @@ public class MainActivity extends Activity {
 									output("\nFailed to create xbin symlinks\n");
 									simlinksCreated = false;
 								}
+
+								RootTools.useRoot = false;
 							}
 						}
 
@@ -187,49 +207,23 @@ public class MainActivity extends Activity {
 	};
 
 
-	private Boolean detectSuBinaryInPath() {
-	// search for su binaries in PATH
-
-		String[] pathToTest = System.getenv("PATH").split(":");
-		for (String path : pathToTest) {
-			File suBinary = new File(path + "/su");
-			if (suBinary.exists()) return true;
-		}
-		return false;
-	}
-
-
 	private String exec(String command) {
-	// execute a shell command, returning output in a string
+		final StringBuffer radare_output = new StringBuffer();
+		Command command_out = new Command(0, command)
+		{
+        		@Override
+        		public void output(int id, String line)
+        		{
+				radare_output.append(line);
+        		}
+		};
 		try {
-			Runtime rt = Runtime.getRuntime();
-			Process process = rt.exec("sh");
-			DataOutputStream os = new DataOutputStream(process.getOutputStream()); 
-			os.writeBytes(command + "\n");
-			os.flush();
-			os.writeBytes("exit\n");
-			os.flush();
-
-			BufferedReader reader = new BufferedReader(
-			new InputStreamReader(process.getInputStream()));
-			int read;
-			char[] buffer = new char[4096];
-			StringBuffer output = new StringBuffer();
-			while ((read = reader.read(buffer)) > 0) {
-				output.append(buffer, 0, read);
-			}
-			reader.close();
-
-			process.waitFor();
-
-			return output.toString();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			RootTools.getShell(true).add(command_out).waitForFinish();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return radare_output.toString();
 	}
-
 
 	private void output(final String str) {
 		Runnable proc = new Runnable() {
