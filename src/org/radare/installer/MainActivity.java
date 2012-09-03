@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
 							isRooted = RootTools.isAccessGiven();
 
 							if(!isRooted) {
-output("\nCould not create xbin symlinks, do you have root?\n");
+								output("\nCould not create xbin symlinks, do you have root?\n");
 							} else { // device is rooted
 
 								RootTools.useRoot = true;
