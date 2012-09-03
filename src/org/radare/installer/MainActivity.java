@@ -99,15 +99,17 @@ public class MainActivity extends Activity {
 						if (!checkHg.isChecked()) url = "http://x90.es/radare2tar";
 					}
 
-					RootTools.useRoot = false;
-					long space = (RootTools.getSpace("/data") / 1000);
-					output("Free space in /data partition: "+ space +" MB\n");
+					long space = 0;
+					if (checkBox.isChecked()) {
+						// getSpace needs root, only try it the symlinks checkbox has been checked
+						space = (RootTools.getSpace("/data") / 1000);
+						output("Free space in /data partition: "+ space +" MB\n");
+					}
+
 					if (space <= 0) {
 						output("Warning: could not check space in /data partition, installation can fail!\n");
-					} else {
-						if (space < 10) {
-							output("Warning: low space in /data partition, installation can fail!\n");
-						}
+					} else if (space < 15) {
+						output("Warning: low space in /data partition, installation can fail!\n");
 					}
 
 					output("Downloading radare2-android... please wait\n");
@@ -141,11 +143,12 @@ public class MainActivity extends Activity {
 						// make sure bin files are executable
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
 
-						boolean isRooted = false;
-        					isRooted = RootTools.isAccessGiven();
-
 						boolean symlinksCreated = false;
 						if (checkBox.isChecked()) {
+
+							boolean isRooted = false;
+							isRooted = RootTools.isAccessGiven();
+
 							if(!isRooted) {
 output("\nCould not create xbin symlinks, do you have root?\n");
 							} else { // device is rooted
