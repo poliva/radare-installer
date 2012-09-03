@@ -59,6 +59,8 @@ public class MainActivity extends Activity {
 	private OnClickListener onRemoteRunButtonClick = new OnClickListener() {
 		public void onClick(View v) {
 
+			//RootTools.debugMode = true;
+
 			// disable button click if it has been clicked once
 			remoteRunButton.setClickable(false);
 			outputView.setText("");
@@ -218,7 +220,7 @@ output("\nCould not create xbin symlinks, do you have root?\n");
         		}
 		};
 		try {
-			RootTools.getShell(true).add(command_out).waitForFinish();
+			RootTools.getShell(RootTools.useRoot).add(command_out).waitForFinish();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
