@@ -34,6 +34,9 @@ import android.content.Context;
 import android.os.Build;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
@@ -61,6 +64,7 @@ public class MainActivity extends Activity {
 		localRunButton = (Button)findViewById(R.id.localRunButton);
 		localRunButton.setOnClickListener(onLocalRunButtonClick);
 
+		RootTools.useRoot = false;
 		if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
 			localRunButton.setClickable(true);
 		} else {
@@ -73,10 +77,20 @@ public class MainActivity extends Activity {
 		public void onClick(View v) {
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
-					Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
-					i.addCategory(Intent.CATEGORY_DEFAULT);
-					i.putExtra("jackpal.androidterm.iInitialCommand", "/data/data/org.radare.installer/radare2/bin/radare2 /system/bin/ls");
-					startActivity(i);
+					if (isAppInstalled("jackpal.androidterm")) {
+						try {
+							Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
+							i.addCategory(Intent.CATEGORY_DEFAULT);
+							i.putExtra("jackpal.androidterm.iInitialCommand", "/data/data/org.radare.installer/radare2/bin/radare2 /system/bin/ls");
+							startActivity(i);
+						} catch (Exception e) {
+							output ("Radare2 installer needs to be reinstalled to be able to launch the terminal emulator\nPlease uninstall radare2 installer, and reinstall again.");
+						}
+					} else {
+						Intent i = new Intent(Intent.ACTION_VIEW); 
+						i.setData(Uri.parse("market://details?id=jackpal.androidterm")); 
+						startActivity(i);
+					}
 				}
 			});
 			thread.start();
@@ -242,6 +256,14 @@ public class MainActivity extends Activity {
 		}
 	};
 
+	private boolean isAppInstalled(String namespace) {
+		try{
+			ApplicationInfo info = getPackageManager().getApplicationInfo(namespace, 0 );
+		return true;
+		} catch( PackageManager.NameNotFoundException e ){
+			return false;
+		}
+	}
 
 	private String exec(String command) {
 		final StringBuffer radare_output = new StringBuffer();
