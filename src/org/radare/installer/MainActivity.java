@@ -33,6 +33,8 @@ import android.net.NetworkInfo;
 import android.content.Context;
 import android.os.Build;
 
+import android.content.Intent;
+
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
 
@@ -41,6 +43,7 @@ public class MainActivity extends Activity {
 	private TextView outputView;
 	private Handler handler = new Handler();
 	private Button remoteRunButton;
+	private Button localRunButton;
 	
 	private Context context;
 
@@ -54,7 +57,31 @@ public class MainActivity extends Activity {
 		outputView = (TextView)findViewById(R.id.outputView);
 		remoteRunButton = (Button)findViewById(R.id.remoteRunButton);
 		remoteRunButton.setOnClickListener(onRemoteRunButtonClick);
+
+		localRunButton = (Button)findViewById(R.id.localRunButton);
+		localRunButton.setOnClickListener(onLocalRunButtonClick);
+
+		if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
+			localRunButton.setClickable(true);
+		} else {
+			localRunButton.setClickable(false);
+		}
+
 	}
+
+	private OnClickListener onLocalRunButtonClick = new OnClickListener() {
+		public void onClick(View v) {
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
+					i.addCategory(Intent.CATEGORY_DEFAULT);
+					i.putExtra("jackpal.androidterm.iInitialCommand", "/data/data/org.radare.installer/radare2/bin/radare2 /system/bin/ls");
+					startActivity(i);
+				}
+			});
+			thread.start();
+		}
+	};
 
 	private OnClickListener onRemoteRunButtonClick = new OnClickListener() {
 		public void onClick(View v) {
@@ -142,6 +169,8 @@ public class MainActivity extends Activity {
 
 						// make sure bin files are executable
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
+						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/");
+						exec("chmod 755 /data/data/org.radare.installer/radare2/");
 
 						boolean symlinksCreated = false;
 						if (checkBox.isChecked()) {
@@ -195,8 +224,10 @@ public class MainActivity extends Activity {
 
 						RootTools.useRoot = false;
 						if (!RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
+							localRunButton.setClickable(false);
 							output("\n\nsomething went wrong during installation :(\n");
 						} else {
+							localRunButton.setClickable(true);
 							if (symlinksCreated == false) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
 							output("\nTesting installation:\n\n$ radare2 -v\n");
 							output = exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");

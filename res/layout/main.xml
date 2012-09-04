@@ -63,6 +63,14 @@ android:padding="15dp"
 		android:textColor="#ff000000"
 		/>
 
+		<Button
+		android:id="@+id/localRunButton" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Launch"
+		android:textColor="#ff000000"
+		/>
+
 	</LinearLayout>
 
 	<ScrollView
