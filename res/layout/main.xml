@@ -41,7 +41,7 @@ android:padding="15dp"
 		android:id="@+id/checkhg"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="install r2-hg (development version)"
+		android:text="install r2-unstable (development version)"
 		android:textColor="#ff000000"
 		/>
 
