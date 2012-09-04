@@ -41,7 +41,7 @@ android:padding="15dp"
 		android:id="@+id/checkhg"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="install r2-unstable (development version)"
+		android:text="install r2-unstable (development ver.)"
 		android:textColor="#ff000000"
 		/>
 
@@ -67,7 +67,7 @@ android:padding="15dp"
 		android:id="@+id/localRunButton" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Launch"
+		android:text="LAUNCH"
 		android:textColor="#ff000000"
 		/>
 

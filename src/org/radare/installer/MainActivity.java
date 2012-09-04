@@ -64,12 +64,6 @@ public class MainActivity extends Activity {
 		localRunButton = (Button)findViewById(R.id.localRunButton);
 		localRunButton.setOnClickListener(onLocalRunButtonClick);
 
-		RootTools.useRoot = false;
-		if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
-			localRunButton.setClickable(true);
-		} else {
-			localRunButton.setClickable(false);
-		}
 
 	}
 
@@ -77,20 +71,37 @@ public class MainActivity extends Activity {
 		public void onClick(View v) {
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
-					if (isAppInstalled("jackpal.androidterm")) {
-						try {
-							Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
-							i.addCategory(Intent.CATEGORY_DEFAULT);
-							i.putExtra("jackpal.androidterm.iInitialCommand", "/data/data/org.radare.installer/radare2/bin/radare2 /system/bin/ls");
+
+					localRunButton.setClickable(false);
+					RootTools.useRoot = false;
+					if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
+
+						if (isAppInstalled("jackpal.androidterm")) {
+							try {
+								Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
+								i.addCategory(Intent.CATEGORY_DEFAULT);
+								i.putExtra("jackpal.androidterm.iInitialCommand", "export PATH=$PATH:/data/data/org.radare.installer/radare2/bin/ ; radare2 /system/bin/ls");
+								startActivity(i);
+							} catch (Exception e) {
+								// if jackpal.androidterm has been installed *after* radare2 installer we don't have
+								// permissions to RUN_SCRIPT, and we need to be reinstalled :(
+								output ("");
+								output ("\nRadare2 installer needs to be reinstalled\n");
+								output ("to be able to launch the Terminal Emulator\n");
+								output ("Please uninstall radare2 installer, and reinstall it again.\n\n");
+								remoteRunButton.setClickable(false);
+							}
+						} else {
+							Intent i = new Intent(Intent.ACTION_VIEW); 
+							i.setData(Uri.parse("market://details?id=jackpal.androidterm")); 
 							startActivity(i);
-						} catch (Exception e) {
-							output ("Radare2 installer needs to be reinstalled to be able to launch the terminal emulator\nPlease uninstall radare2 installer, and reinstall again.");
 						}
+
 					} else {
-						Intent i = new Intent(Intent.ACTION_VIEW); 
-						i.setData(Uri.parse("market://details?id=jackpal.androidterm")); 
-						startActivity(i);
+						output ("");
+						output ("\nPlease install radare2 first!\n");
 					}
+					localRunButton.setClickable(true);
 				}
 			});
 			thread.start();
@@ -104,7 +115,9 @@ public class MainActivity extends Activity {
 
 			// disable button click if it has been clicked once
 			remoteRunButton.setClickable(false);
-			outputView.setText("");
+			localRunButton.setClickable(false);
+			//outputView.setText("");
+			output ("");
 
 			final String localPath = "/data/data/org.radare.installer/radare2-android.tar.gz";
 			final CheckBox checkBox = (CheckBox) findViewById(R.id.checkbox);
@@ -209,7 +222,7 @@ public class MainActivity extends Activity {
 
 									// show output for the first link, in case there's any error with su
 									output = exec("ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1");
-									output(output);
+									if (output!="") output(output);
 
 									String file;
 									File folder = new File("/data/data/org.radare.installer/radare2/bin/");
@@ -245,11 +258,12 @@ public class MainActivity extends Activity {
 							if (symlinksCreated == false) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
 							output("\nTesting installation:\n\n$ radare2 -v\n");
 							output = exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");
-							output(output);
+							if (output!="") output(output);
 						}
 					}
 					// enable button again
 					remoteRunButton.setClickable(true);
+					localRunButton.setClickable(true);
 				}
 			});
 			thread.start();
@@ -287,6 +301,7 @@ public class MainActivity extends Activity {
 		Runnable proc = new Runnable() {
 			public void run() {
 				if (str!=null) outputView.append(str);
+				if (str=="") outputView.setText("");
 			}
 		};
 		handler.post(proc);
