@@ -76,8 +76,9 @@ public class MainActivity extends Activity {
 				public void run() {
 
 					localRunButton.setClickable(false);
-					RootTools.useRoot = false;
-					if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
+
+					File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
+					if (radarebin.exists()) {
 
 						if (mUtils.isAppInstalled("jackpal.androidterm")) {
 							try {
