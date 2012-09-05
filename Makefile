@@ -12,6 +12,7 @@ uninstall:
 
 
 install: uninstall build
+	adb install bin/radare2\ installer-${BUILD}.apk
 	adb shell 'LD_LIBRARY_PATH=/system/lib am start -n org.radare.installer/.MainActivity'
 
 test:
