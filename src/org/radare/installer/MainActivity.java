@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
 							try {
 								Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
 								i.addCategory(Intent.CATEGORY_DEFAULT);
-								i.putExtra("jackpal.androidterm.iInitialCommand", "export PATH=$PATH:/data/data/org.radare.installer/radare2/bin/ ; radare2 /system/bin/ls");
+								i.putExtra("jackpal.androidterm.iInitialCommand", "export PATH=$PATH:/data/data/org.radare.installer/radare2/bin/ ; radare2 /system/bin/toolbox");
 								startActivity(i);
 							} catch (Exception e) {
 								// if jackpal.androidterm has been installed *after* radare2 installer we don't have
