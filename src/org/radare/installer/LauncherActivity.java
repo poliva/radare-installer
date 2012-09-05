@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.stericson.RootTools.*;
+import java.io.File;
 
 public class LauncherActivity extends Activity {
 
@@ -36,8 +36,8 @@ public class LauncherActivity extends Activity {
 
 		mUtils = new Utils(getApplicationContext());
 
-		RootTools.useRoot = false;
-		if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
+		File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
+		if (radarebin.exists()) {
 
 			if (mUtils.isAppInstalled("jackpal.androidterm")) {
 				try {
