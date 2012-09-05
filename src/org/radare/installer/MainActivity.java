@@ -4,6 +4,8 @@ radare2 installer for Android
 */
 package org.radare.installer;
 
+import org.radare.installer.Utils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,8 +37,6 @@ import android.os.Build;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
@@ -49,6 +49,7 @@ public class MainActivity extends Activity {
 	private Button localRunButton;
 	
 	private Context context;
+	private Utils mUtils;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -64,6 +65,8 @@ public class MainActivity extends Activity {
 		localRunButton = (Button)findViewById(R.id.localRunButton);
 		localRunButton.setOnClickListener(onLocalRunButtonClick);
 
+		mUtils = new Utils(getApplicationContext());
+
 
 	}
 
@@ -76,7 +79,7 @@ public class MainActivity extends Activity {
 					RootTools.useRoot = false;
 					if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
 
-						if (isAppInstalled("jackpal.androidterm")) {
+						if (mUtils.isAppInstalled("jackpal.androidterm")) {
 							try {
 								Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
 								i.addCategory(Intent.CATEGORY_DEFAULT);
@@ -270,14 +273,6 @@ public class MainActivity extends Activity {
 		}
 	};
 
-	private boolean isAppInstalled(String namespace) {
-		try{
-			ApplicationInfo info = getPackageManager().getApplicationInfo(namespace, 0 );
-		return true;
-		} catch( PackageManager.NameNotFoundException e ){
-			return false;
-		}
-	}
 
 	private String exec(String command) {
 		final StringBuffer radare_output = new StringBuffer();
@@ -336,8 +331,6 @@ public class MainActivity extends Activity {
 		//remove the temporary gunzipped tar
 		new File(tempPath).delete();
 	}
-
-
 
 	public final boolean isInternetAvailable(){
 	// check if we are connected to the internet
