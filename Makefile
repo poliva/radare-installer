@@ -1,14 +1,15 @@
 BUILD=debug
 #BUILD=release
 
+build: clean
+	ant ${BUILD}
+
 clean:
 	rm -rf bin gen
 
 uninstall:
 	adb shell 'LD_LIBRARY_PATH=/system/lib pm uninstall org.radare.installer'
 
-build: clean
-	ant ${BUILD}
 
 install: uninstall build
 	adb shell 'LD_LIBRARY_PATH=/system/lib am start -n org.radare.installer/.MainActivity'
