@@ -66,12 +66,16 @@ public class WebActivity extends Activity {
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {  
-				//String value = input.getText().toString();
 				EditText mUserText;
 				mUserText = (EditText) textEntryView.findViewById(R.id.dialog_ret);
 				String strFileName = mUserText.getText().toString();
 
 				RootTools.useRoot = false;
+
+				if (RootTools.isProcessRunning("radare2")) {
+					RootTools.killProcess("radare2");
+				}
+
 				CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + strFileName + " &");
 				try {
 					RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
