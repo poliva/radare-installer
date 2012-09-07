@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 					
 					Intent intent = new Intent(MainActivity.this, LauncherActivity.class);
 					startActivity(intent);      
-					finish();
+					//finish();
 
 					localRunButton.setClickable(true);
 				}

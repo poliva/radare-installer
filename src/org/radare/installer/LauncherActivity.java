@@ -62,8 +62,8 @@ public class LauncherActivity extends Activity {
 
 		} else {
 			myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
-			Intent i = new Intent(LauncherActivity.this, MainActivity.class);
-			startActivity(i);
+			//Intent i = new Intent(LauncherActivity.this, MainActivity.class);
+			//startActivity(i);
 		}
 
 		finish();
