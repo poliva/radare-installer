@@ -51,9 +51,13 @@ public class LauncherActivity extends Activity {
 			} else {
 				//Toast.makeText(getApplicationContext(), "terminal not installed", Toast.LENGTH_LONG).show();
 				myToast("Please install Android Terminal Emulator first!", Toast.LENGTH_LONG);
-				Intent i = new Intent(Intent.ACTION_VIEW); 
-				i.setData(Uri.parse("market://details?id=jackpal.androidterm")); 
-				startActivity(i);
+				try {
+					Intent i = new Intent(Intent.ACTION_VIEW); 
+					i.setData(Uri.parse("market://details?id=jackpal.androidterm")); 
+					startActivity(i);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 
 		} else {
