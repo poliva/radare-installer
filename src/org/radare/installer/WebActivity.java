@@ -83,6 +83,12 @@ public class WebActivity extends Activity {
 					e.printStackTrace();
 				}
 
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {
+                                        e.printStackTrace();
+                                }
+
 				webview = (WebView) findViewById(R.id.webview);
 				webview.setWebViewClient(new RadareWebViewClient());
 				webview.getSettings().setJavaScriptEnabled(true);
