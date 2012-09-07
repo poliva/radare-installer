@@ -41,7 +41,7 @@ public class WebActivity extends Activity {
 		setContentView(R.layout.webactivity);
 
 		RootTools.useRoot = false;
-		CommandCapture command = new CommandCapture(0, "export TMPDIR=/data/data/org.radare.installer/radare2/tmp ; /data/data/org.radare.installer/radare2/bin/radare2 -c=h /system/bin/toolbox");
+		CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h /system/bin/toolbox &");
 		try {
 			RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
 		} catch (Exception e) {
