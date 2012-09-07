@@ -76,35 +76,11 @@ public class MainActivity extends Activity {
 				public void run() {
 
 					localRunButton.setClickable(false);
+					
+					Intent intent = new Intent(MainActivity.this, LauncherActivity.class);
+					startActivity(intent);      
+					finish();
 
-					File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
-					if (radarebin.exists()) {
-
-						if (mUtils.isAppInstalled("jackpal.androidterm")) {
-							try {
-								Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
-								i.addCategory(Intent.CATEGORY_DEFAULT);
-								i.putExtra("jackpal.androidterm.iInitialCommand", "export PATH=$PATH:/data/data/org.radare.installer/radare2/bin/ ; radare2 /system/bin/toolbox");
-								startActivity(i);
-							} catch (Exception e) {
-								// if jackpal.androidterm has been installed *after* radare2 installer we don't have
-								// permissions to RUN_SCRIPT, and we need to be reinstalled :(
-								output ("");
-								output ("\nRadare2 installer needs to be reinstalled\n");
-								output ("to be able to launch the Terminal Emulator\n");
-								output ("Please uninstall radare2 installer, and reinstall it again.\n\n");
-								remoteRunButton.setClickable(false);
-							}
-						} else {
-							Intent i = new Intent(Intent.ACTION_VIEW); 
-							i.setData(Uri.parse("market://details?id=jackpal.androidterm")); 
-							startActivity(i);
-						}
-
-					} else {
-						output ("");
-						output ("\nPlease install radare2 first!\n");
-					}
 					localRunButton.setClickable(true);
 				}
 			});
@@ -155,6 +131,7 @@ public class MainActivity extends Activity {
 					/* fix broken stable URL in radare2 0.9 */
 					if (cpuabi.matches(".*arm.*")) {
 						if (!checkHg.isChecked()) url = "http://x90.es/radare2tar";
+						else url = "http://pof.eslack.org/tmp/radare2-0.9.1git-android-arm.tar.gz"; //for my tests
 					}
 
 					long space = 0;
