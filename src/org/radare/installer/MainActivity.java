@@ -116,7 +116,7 @@ public class MainActivity extends Activity {
 					if (cpuabi.matches(".*x86.*")) arch="x86";
 					if (cpuabi.matches(".*arm.*")) arch="arm";
 					
-					output ("Detected CPU: " + cpuabi + "\n");
+					output ("Detected CPU: " + cpuabi + " (" + arch +")\n");
 
 					if (checkHg.isChecked()) {
 						output("Download: unstable/development version from nightly build.\nNote: this version can be broken!\n");
@@ -241,6 +241,7 @@ public class MainActivity extends Activity {
 							output("\nTesting installation:\n\n$ radare2 -v\n");
 							output = exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");
 							if (output!="") output(output);
+							else output("Radare was not installed successfully, make sure you have enough space in /data and try again.");
 						}
 					}
 					// enable button again
@@ -339,10 +340,8 @@ public class MainActivity extends Activity {
 			out.close();
 			in.close();
 			urlconn.disconnect();
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
     
