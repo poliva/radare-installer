@@ -20,6 +20,9 @@ import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.widget.EditText;
 
+import android.widget.Toast;
+import java.io.File;
+
 import com.stericson.RootTools.*;
 
 public class WebActivity extends Activity {
@@ -31,9 +34,19 @@ public class WebActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.webactivity);
 
-		RequestFileName();
+		mUtils = new Utils(getApplicationContext());
+
+		File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
+		if (radarebin.exists()) {
+
+			setContentView(R.layout.webactivity);
+			RequestFileName();
+
+		} else {
+			mUtils.myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
+			finish();
+		}
 	}
 
 	private class RadareWebViewClient extends WebViewClient {
