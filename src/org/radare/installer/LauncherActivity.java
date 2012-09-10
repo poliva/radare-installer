@@ -36,6 +36,9 @@ public class LauncherActivity extends Activity {
 
 		mUtils = new Utils(getApplicationContext());
 
+		Bundle b = getIntent().getExtras();
+		String file_to_open = b.getString("filename", "default");
+
 		File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
 		if (radarebin.exists()) {
 
@@ -43,7 +46,7 @@ public class LauncherActivity extends Activity {
 				try {
 					Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
 					i.addCategory(Intent.CATEGORY_DEFAULT);
-					i.putExtra("jackpal.androidterm.iInitialCommand", "export PATH=$PATH:/data/data/org.radare.installer/radare2/bin/ ; radare2 /system/bin/toolbox");
+					i.putExtra("jackpal.androidterm.iInitialCommand", "export PATH=$PATH:/data/data/org.radare.installer/radare2/bin/ ; radare2 " + file_to_open);
 					startActivity(i);
 				} catch (Exception e) {
 					mUtils.myToast("ERROR: Not enough permissions.\nPlease reinstall this application and try again.", Toast.LENGTH_LONG);

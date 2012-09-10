@@ -41,7 +41,35 @@ public class WebActivity extends Activity {
 		if (radarebin.exists()) {
 
 			setContentView(R.layout.webactivity);
-			RequestFileName();
+
+			RootTools.useRoot = false;
+
+			if (RootTools.isProcessRunning("radare2")) {
+				RootTools.killProcess("radare2");
+			}
+
+			Bundle b = getIntent().getExtras();
+			String file_to_open = b.getString("filename", "default");
+
+			CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open + " &");
+			try {
+				RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+                                e.printStackTrace();
+                        }
+
+			webview = (WebView) findViewById(R.id.webview);
+			webview.setWebViewClient(new RadareWebViewClient());
+			webview.getSettings().setJavaScriptEnabled(true);
+			webview.loadUrl("http://localhost:9090");
+
+
 
 		} else {
 			mUtils.myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
@@ -67,51 +95,6 @@ public class WebActivity extends Activity {
 	}
 
 
-	private void RequestFileName() {
-		LayoutInflater factory = LayoutInflater.from(this);
 
-		final View textEntryView = factory.inflate(R.layout.dialog, null);
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);                 
-
-		alert.setTitle("File to open?");  
-		alert.setMessage("Enter Filename:");                
-		alert.setView(textEntryView);
-
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {  
-				EditText mUserText;
-				mUserText = (EditText) textEntryView.findViewById(R.id.dialog_ret);
-				String strFileName = mUserText.getText().toString();
-
-				RootTools.useRoot = false;
-
-				if (RootTools.isProcessRunning("radare2")) {
-					RootTools.killProcess("radare2");
-				}
-
-				CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + strFileName + " &");
-				try {
-					RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				try {
-					Thread.sleep(1000);
-				} catch (Exception e) {
-                                        e.printStackTrace();
-                                }
-
-				webview = (WebView) findViewById(R.id.webview);
-				webview.setWebViewClient(new RadareWebViewClient());
-				webview.getSettings().setJavaScriptEnabled(true);
-				webview.loadUrl("http://localhost:9090");
-
-				return;
-			}  
-		});  
-
-		alert.show();
-	}
 
 }

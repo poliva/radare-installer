@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 
 					localRunButton.setClickable(false);
 					
-					Intent intent = new Intent(MainActivity.this, LauncherActivity.class);
+					Intent intent = new Intent(MainActivity.this, LaunchActivity.class);
 					startActivity(intent);      
 					//finish();
 
