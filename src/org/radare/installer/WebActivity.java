@@ -29,8 +29,9 @@ public class WebActivity extends Activity {
 
 		setContentView(R.layout.webactivity);
 
+		// make sure we don't start a second instance of radare webserver
+		// we can't use killradare() here because it finishes the activity
 		RootTools.useRoot = false;
-
 		if (RootTools.isProcessRunning("radare2")) {
 			RootTools.killProcess("radare2");
 		}
@@ -58,6 +59,21 @@ public class WebActivity extends Activity {
 
 	}
 
+	private void killradare() {
+		RootTools.useRoot = false;
+		if (RootTools.isProcessRunning("radare2")) {
+			RootTools.killProcess("radare2");
+		}
+		finish();
+	}
+
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		killradare();
+	}
+
 	private class RadareWebViewClient extends WebViewClient {
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url)
@@ -70,12 +86,10 @@ public class WebActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK) && webview.canGoBack()) {
 			webview.goBack();
+			killradare();
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
-
-
 
 }
