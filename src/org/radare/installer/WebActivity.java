@@ -13,6 +13,8 @@ import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import android.widget.Toast;
+
 import com.stericson.RootTools.*;
 
 public class WebActivity extends Activity {
@@ -39,23 +41,29 @@ public class WebActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		String file_to_open = b.getString("filename", "default");
 
-		CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open + " &");
+		CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
 		try {
 			RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+/*
 		try {
 			Thread.sleep(1000);
 		} catch (Exception e) {
                         e.printStackTrace();
                 }
+*/
 
-		webview = (WebView) findViewById(R.id.webview);
-		webview.setWebViewClient(new RadareWebViewClient());
-		webview.getSettings().setJavaScriptEnabled(true);
-		webview.loadUrl("http://localhost:9090");
+		if (RootTools.isProcessRunning("radare2")) {
+			webview = (WebView) findViewById(R.id.webview);
+			webview.setWebViewClient(new RadareWebViewClient());
+			webview.getSettings().setJavaScriptEnabled(true);
+			webview.loadUrl("http://localhost:9090");
+		} else {
+			mUtils.myToast("Could not open file " + file_to_open, Toast.LENGTH_SHORT);
+			finish();
+		}
 
 	}
 
