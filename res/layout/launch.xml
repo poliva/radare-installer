@@ -16,6 +16,16 @@ android:padding="15dp"
 	android:text="File to open:"
 	/>
 
+	<TextView  
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content" 
+	android:textColor="#999999"
+	android:gravity="center"
+	android:id="@+id/help_text"
+	android:textSize="12sp"
+	android:text="Hint: Use apk://foo.apk to open classes.dex"
+	/>
+
 	<EditText
 	android:id="@+id/file_to_open"
 	android:textColor="#ff000000"
