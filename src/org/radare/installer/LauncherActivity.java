@@ -26,7 +26,7 @@ public class LauncherActivity extends Activity {
 		mUtils = new Utils(getApplicationContext());
 
 		Bundle b = getIntent().getExtras();
-		String file_to_open = b.getString("filename", "default");
+		String file_to_open = b.getString("filename");
 
 
 		if (mUtils.isAppInstalled("jackpal.androidterm")) {

@@ -39,7 +39,7 @@ public class WebActivity extends Activity {
 		}
 
 		Bundle b = getIntent().getExtras();
-		String file_to_open = b.getString("filename", "default");
+		String file_to_open = b.getString("filename");
 
 		CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
 		try {
