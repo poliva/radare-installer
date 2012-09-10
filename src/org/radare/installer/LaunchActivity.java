@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.EditText;
 
+import android.widget.Toast;
+import java.io.File;
+
 public class LaunchActivity extends Activity {
 
 	private Utils mUtils;
@@ -28,10 +31,17 @@ public class LaunchActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.launch);
 
-		addListenerOnButton();
+		mUtils = new Utils(getApplicationContext());
 
+		File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
+		if (radarebin.exists()) {
+			setContentView(R.layout.launch);
+			addListenerOnButton();
+		} else {
+			mUtils.myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
+			finish();
+		}
 	}
 
 	public void addListenerOnButton() {
@@ -62,10 +72,7 @@ public class LaunchActivity extends Activity {
 						startActivity(intent2);
 					break;
 				}
-				//finish();
 			}
-
 		});
-
 	}
 }
