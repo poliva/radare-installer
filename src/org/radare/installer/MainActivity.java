@@ -180,6 +180,7 @@ public class MainActivity extends Activity {
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/");
 						exec("chmod 755 /data/data/org.radare.installer/radare2/");
 						exec("mkdir /data/data/org.radare.installer/radare2/tmp/");
+						exec("chmod 777 /data/data/org.radare.installer/radare2/tmp/");
 
 						boolean symlinksCreated = false;
 						if (checkBox.isChecked()) {
