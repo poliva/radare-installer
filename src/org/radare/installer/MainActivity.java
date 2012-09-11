@@ -38,6 +38,9 @@ import android.os.Build;
 import android.content.Intent;
 import android.net.Uri;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
 
@@ -67,7 +70,35 @@ public class MainActivity extends Activity {
 
 		mUtils = new Utils(getApplicationContext());
 
+		// Restore version from preferences
+		SharedPreferences settings = getSharedPreferences("radare-installer-preferences", MODE_PRIVATE);
+		String version = settings.getString("version", "unknown");
+		if (version != "unknown") {
+			output ("radare2 " + version + " is installed.\n");
+			// XXX TODO: if internet is available, check for radare2 updates for installed arch + version
+			//String url = "http://radare.org/get/pkg/android/" + arch + "/" + hg;
+			//UpdateCheck(url);
+		}
+	}
 
+	private boolean UpdateCheck(String urlStr) {
+		// XXX TODO: store ETag in a sharedpref when downloading radare, to check against it here
+		boolean update = false;
+		try {
+			URL url = new URL(urlStr);
+			HttpURLConnection urlconn = (HttpURLConnection)url.openConnection();
+			urlconn.setRequestMethod("GET");
+			urlconn.setInstanceFollowRedirects(true);
+			urlconn.getRequestProperties();
+			urlconn.connect();
+			String mETag = urlconn.getHeaderField("ETag");
+			//output("ETag: "+ mETag);
+			urlconn.disconnect();
+			update = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return update;
 	}
 
 	private OnClickListener onLocalRunButtonClick = new OnClickListener() {
@@ -125,6 +156,12 @@ public class MainActivity extends Activity {
 						output("Download: stable version\n");
 						hg = "stable";
 					}
+
+					// store installed version in preferences
+					SharedPreferences settings = getSharedPreferences("radare-installer-preferences", MODE_PRIVATE);
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putString("version",hg);
+					editor.commit();
 
 					url = "http://radare.org/get/pkg/android/" + arch + "/" + hg;
 
