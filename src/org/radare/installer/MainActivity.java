@@ -38,9 +38,6 @@ import android.os.Build;
 import android.content.Intent;
 import android.net.Uri;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
 
@@ -71,13 +68,12 @@ public class MainActivity extends Activity {
 		mUtils = new Utils(getApplicationContext());
 
 		// Restore version from preferences
-		SharedPreferences settings = getSharedPreferences("radare-installer-preferences", MODE_PRIVATE);
-		String version = settings.getString("version", "unknown");
-		if (version != "unknown") {
+		String version = mUtils.GetPref("version");
+		if (version != "unknown" && mUtils.isInternetAvailable()) {
 			output ("radare2 " + version + " is installed.\n");
-			// XXX TODO: if internet is available, check for radare2 updates for installed arch + version
-			//String url = "http://radare.org/get/pkg/android/" + arch + "/" + hg;
-			//UpdateCheck(url);
+			String arch = mUtils.GetArch();
+			String url = "http://radare.org/get/pkg/android/" + arch + "/" + version;
+			UpdateCheck(url);
 		}
 	}
 
@@ -140,13 +136,9 @@ public class MainActivity extends Activity {
 					String url;
 					String hg;
 					String output;
-					String arch = "arm";
+					String arch = mUtils.GetArch();
 					String cpuabi = Build.CPU_ABI;
 
-					if (cpuabi.matches(".*mips.*")) arch="mips";
-					if (cpuabi.matches(".*x86.*")) arch="x86";
-					if (cpuabi.matches(".*arm.*")) arch="arm";
-					
 					output ("Detected CPU: " + cpuabi + " (" + arch +")\n");
 
 					if (checkHg.isChecked()) {
@@ -158,10 +150,7 @@ public class MainActivity extends Activity {
 					}
 
 					// store installed version in preferences
-					SharedPreferences settings = getSharedPreferences("radare-installer-preferences", MODE_PRIVATE);
-					SharedPreferences.Editor editor = settings.edit();
-					editor.putString("version",hg);
-					editor.commit();
+					mUtils.StorePref("version",hg);
 
 					url = "http://radare.org/get/pkg/android/" + arch + "/" + hg;
 
@@ -187,7 +176,7 @@ public class MainActivity extends Activity {
 					output("Downloading radare2-android... please wait\n");
 					//output("URL: "+url+"\n");
 
-					if (isInternetAvailable() == false) {
+					if (mUtils.isInternetAvailable() == false) {
 						output("\nCan't connect to download server. Check that internet connection is available.\n");
 					} else {
 
@@ -349,17 +338,6 @@ public class MainActivity extends Activity {
 		//remove the temporary gunzipped tar
 		new File(tempPath).delete();
 	}
-
-	public final boolean isInternetAvailable(){
-	// check if we are connected to the internet
-		ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-		if(info == null)
-		    return false;
-
-		return connectivityManager.getActiveNetworkInfo().isConnected();
-	}
-
 
 	private void download(String urlStr, String localPath) {
 		try {

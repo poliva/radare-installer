@@ -16,6 +16,14 @@ import android.widget.Toast;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
+import android.os.Build;
+
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 public class Utils {
 
 	private Context mContext;
@@ -48,6 +56,41 @@ public class Utils {
 		toast.setDuration(myDuration);
 		toast.setView(layout);
 		toast.show();
+	}
+
+	// store a Key-Value string in preferences
+	public void StorePref(String Key, String Value) {
+		SharedPreferences settings = mContext.getSharedPreferences("radare-installer-preferences", mContext.MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString(Key,Value);
+		editor.commit();
+	}
+
+	// get the String value from key in preferences, returns unknown if not set
+	public String GetPref(String Key) {
+		SharedPreferences settings = mContext.getSharedPreferences("radare-installer-preferences", mContext.MODE_PRIVATE);
+		String version = settings.getString(Key, "unknown");
+		return version;
+	}
+
+	public String GetArch() {
+		String arch = "arm";
+		String cpuabi = Build.CPU_ABI;
+
+		if (cpuabi.matches(".*mips.*")) arch="mips";
+		if (cpuabi.matches(".*x86.*")) arch="x86";
+		if (cpuabi.matches(".*arm.*")) arch="arm";
+		return arch;
+	}
+
+	public final boolean isInternetAvailable(){
+	// check if we are connected to the internet
+		ConnectivityManager connectivityManager = (ConnectivityManager)mContext.getSystemService(mContext.CONNECTIVITY_SERVICE);
+		NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+		if(info == null)
+		    return false;
+
+		return connectivityManager.getActiveNetworkInfo().isConnected();
 	}
 
 }
