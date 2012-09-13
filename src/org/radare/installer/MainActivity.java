@@ -67,18 +67,25 @@ public class MainActivity extends Activity {
 
 		mUtils = new Utils(getApplicationContext());
 
-		// Restore version from preferences
-		String version = mUtils.GetPref("version");
-		if (version != "unknown" && mUtils.isInternetAvailable()) {
-			output ("radare2 " + version + " is installed.\n");
-			String arch = mUtils.GetArch();
-			String url = "http://radare.org/get/pkg/android/" + arch + "/" + version;
-			UpdateCheck(url);
+		if (mUtils.isInternetAvailable()) {
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					String version = mUtils.GetPref("version");
+					String ETag = mUtils.GetPref("ETag");
+					if (version != "unknown" && ETag != "unknown") {
+						output ("radare2 " + version + " is installed.\n");
+						String arch = mUtils.GetArch();
+						String url = "http://radare.org/get/pkg/android/" + arch + "/" + version;
+						boolean update = UpdateCheck(url);
+						if (update) output ("New radare2 " + version + " version available!\n");
+					}
+				}
+			});
+			thread.start();
 		}
 	}
 
 	private boolean UpdateCheck(String urlStr) {
-		// XXX TODO: store ETag in a sharedpref when downloading radare, to check against it here
 		boolean update = false;
 		try {
 			URL url = new URL(urlStr);
@@ -88,9 +95,11 @@ public class MainActivity extends Activity {
 			urlconn.getRequestProperties();
 			urlconn.connect();
 			String mETag = urlconn.getHeaderField("ETag");
-			//output("ETag: "+ mETag);
 			urlconn.disconnect();
-			update = true;
+			String ETag = mUtils.GetPref("ETag");
+			if (ETag != mETag) {
+				update = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -345,7 +354,10 @@ public class MainActivity extends Activity {
 			HttpURLConnection urlconn = (HttpURLConnection)url.openConnection();
 			urlconn.setRequestMethod("GET");
 			urlconn.setInstanceFollowRedirects(true);
+			urlconn.getRequestProperties();
 			urlconn.connect();
+			String mETag = urlconn.getHeaderField("ETag");
+			mUtils.StorePref("ETag",mETag);
 			InputStream in = urlconn.getInputStream();
 			FileOutputStream out = new FileOutputStream(localPath);
 			int read;
