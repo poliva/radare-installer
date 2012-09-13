@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
 						boolean update = UpdateCheck(url);
 						if (update) {
 							output ("New radare2 " + version + " version available!\n");
-							SendNotification("New radare2 " + version + " version available!\n");
+							SendNotification("Radare2 update", "New radare2 " + version + " version available!\n");
 						}
 					}
 				}
@@ -92,16 +92,17 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void SendNotification(String message) {
+	private void SendNotification(String title, String message) {
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 		int icon = R.drawable.icon;
-		CharSequence tickerText = "Radare2 update";
+		CharSequence tickerText = title;
 		long when = System.currentTimeMillis();
 		Notification notification = new Notification( icon, tickerText, when);
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
 		Context context = getApplicationContext();
-		CharSequence contentTitle = "Radare2 update";
+		CharSequence contentTitle = title;
 		CharSequence contentText = message;
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
