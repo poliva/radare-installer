@@ -38,6 +38,10 @@ import android.os.Build;
 import android.content.Intent;
 import android.net.Uri;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
 
@@ -77,12 +81,35 @@ public class MainActivity extends Activity {
 						String arch = mUtils.GetArch();
 						String url = "http://radare.org/get/pkg/android/" + arch + "/" + version;
 						boolean update = UpdateCheck(url);
-						if (update) output ("New radare2 " + version + " version available!\n");
+						if (update) {
+							output ("New radare2 " + version + " version available!\n");
+							SendNotification("New radare2 " + version + " version available!\n");
+						}
 					}
 				}
 			});
 			thread.start();
 		}
+	}
+
+	private void SendNotification(String message) {
+		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+		int icon = R.drawable.icon;
+		CharSequence tickerText = "Radare2 update";
+		long when = System.currentTimeMillis();
+		Notification notification = new Notification( icon, tickerText, when);
+
+		Context context = getApplicationContext();
+		CharSequence contentTitle = "Radare2 update";
+		CharSequence contentText = message;
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+
+		//  Send the notification
+		nm.notify( 1, notification );
 	}
 
 	private boolean UpdateCheck(String urlStr) {
