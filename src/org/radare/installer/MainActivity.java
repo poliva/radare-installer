@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
 				public void run() {
 					String version = mUtils.GetPref("version");
 					String ETag = mUtils.GetPref("ETag");
-					if (version != "unknown" && ETag != "unknown") {
+					if (!version.equals("unknown") && !ETag.equals("unknown")) {
 						output ("radare2 " + version + " is installed.\n");
 						String arch = mUtils.GetArch();
 						String url = "http://radare.org/get/pkg/android/" + arch + "/" + version;
@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
 			String mETag = urlconn.getHeaderField("ETag");
 			urlconn.disconnect();
 			String ETag = mUtils.GetPref("ETag");
-			if (ETag != mETag) {
+			if (!ETag.equals(mETag)) {
 				update = true;
 			}
 		} catch (Exception e) {
@@ -268,7 +268,7 @@ public class MainActivity extends Activity {
 
 									// show output for the first link, in case there's any error with su
 									output = exec("ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1");
-									if (output!="") output(output);
+									if (!output.equals("")) output(output);
 
 									String file;
 									File folder = new File("/data/data/org.radare.installer/radare2/bin/");
@@ -304,7 +304,7 @@ public class MainActivity extends Activity {
 							if (symlinksCreated == false) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
 							output("\nTesting installation:\n\n$ radare2 -v\n");
 							output = exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");
-							if (output!="") output(output);
+							if (!output.equals("")) output(output);
 							else output("Radare was not installed successfully, make sure you have enough space in /data and try again.");
 						}
 					}
@@ -340,7 +340,7 @@ public class MainActivity extends Activity {
 		Runnable proc = new Runnable() {
 			public void run() {
 				if (str!=null) outputView.append(str);
-				if (str=="") outputView.setText("");
+				if (str.equals("")) outputView.setText("");
 			}
 		};
 		handler.post(proc);
