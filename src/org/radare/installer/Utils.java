@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 import android.os.Build;
 
@@ -69,7 +70,8 @@ public class Utils {
 
 	// store a Key-Value string in preferences
 	public void StorePref(String Key, String Value) {
-		SharedPreferences settings = mContext.getSharedPreferences("radare-installer-preferences", mContext.MODE_PRIVATE);
+		//SharedPreferences settings = mContext.getSharedPreferences("radare-installer-preferences", mContext.MODE_PRIVATE);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(Key,Value);
 		editor.commit();
@@ -77,7 +79,8 @@ public class Utils {
 
 	// get the String value from key in preferences, returns unknown if not set
 	public String GetPref(String Key) {
-		SharedPreferences settings = mContext.getSharedPreferences("radare-installer-preferences", mContext.MODE_PRIVATE);
+		//SharedPreferences settings = mContext.getSharedPreferences("radare-installer-preferences", mContext.MODE_PRIVATE);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
 		String version = settings.getString(Key, "unknown");
 		return version;
 	}

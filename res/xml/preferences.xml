@@ -10,7 +10,7 @@
         <ListPreference 
             android:key="updates_interval"
             android:title="Updates interval"
-            android:summary="Define how often to check for radare2 updates"
+            android:summary="How often to check for radare2 updates"
             android:defaultValue="12" 
             android:entries="@array/updateInterval"
             android:entryValues="@array/updateIntervalValues"
