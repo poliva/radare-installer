@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
 						output ("radare2 " + version + " is installed.\n");
 						String arch = mUtils.GetArch();
 						String url = "http://radare.org/get/pkg/android/" + arch + "/" + version;
-						boolean update = UpdateCheck(url);
+						boolean update = mUtils.UpdateCheck(url);
 						if (update) {
 							output ("New radare2 " + version + " version available!\n");
 							SendNotification("Radare2 update", "New radare2 " + version + " version available!\n");
@@ -132,26 +132,6 @@ public class MainActivity extends Activity {
 		nm.notify( 1, notification );
 	}
 
-	private boolean UpdateCheck(String urlStr) {
-		boolean update = false;
-		try {
-			URL url = new URL(urlStr);
-			HttpURLConnection urlconn = (HttpURLConnection)url.openConnection();
-			urlconn.setRequestMethod("GET");
-			urlconn.setInstanceFollowRedirects(true);
-			urlconn.getRequestProperties();
-			urlconn.connect();
-			String mETag = urlconn.getHeaderField("ETag");
-			urlconn.disconnect();
-			String ETag = mUtils.GetPref("ETag");
-			if (!ETag.equals(mETag)) {
-				update = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return update;
-	}
 
 	private OnClickListener onLocalRunButtonClick = new OnClickListener() {
 		public void onClick(View v) {

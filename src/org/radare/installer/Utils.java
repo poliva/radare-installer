@@ -24,6 +24,12 @@ import android.os.Build;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+
+
 public class Utils {
 
 	private Context mContext;
@@ -91,6 +97,27 @@ public class Utils {
 		    return false;
 
 		return connectivityManager.getActiveNetworkInfo().isConnected();
+	}
+
+	public boolean UpdateCheck(String urlStr) {
+		boolean update = false;
+		try {
+			URL url = new URL(urlStr);
+			HttpURLConnection urlconn = (HttpURLConnection)url.openConnection();
+			urlconn.setRequestMethod("GET");
+			urlconn.setInstanceFollowRedirects(true);
+			urlconn.getRequestProperties();
+			urlconn.connect();
+			String mETag = urlconn.getHeaderField("ETag");
+			urlconn.disconnect();
+			String ETag = GetPref("ETag");
+			if (!ETag.equals(mETag)) {
+				update = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return update;
 	}
 
 }
