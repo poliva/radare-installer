@@ -40,6 +40,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
+	<activity android:name=".SettingsActivity" android:label="radare2 installer settings" android:excludeFromRecents="true" />
     </application>
 </manifest> 

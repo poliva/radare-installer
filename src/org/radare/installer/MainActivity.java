@@ -42,6 +42,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
 
@@ -90,6 +93,22 @@ public class MainActivity extends Activity {
 			});
 			thread.start();
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, 0, 0, "Settings");
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case 0:
+				startActivity(new Intent(this, SettingsActivity.class));
+				return true;
+		}
+		return false;
 	}
 
 	private void SendNotification(String title, String message) {

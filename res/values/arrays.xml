@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="updateInterval">
+        <item name="12">Every 12 hours</item>
+        <item name="24">Every day</item>
+        <item name="48">Every 2 days</item>
+        <item name="336">Every week</item>
+    </string-array>
+    <string-array name="updateIntervalValues">
+        <item name="12">12</item>
+        <item name="24">24</item>
+        <item name="48">48</item>
+        <item name="336">336</item>
+    </string-array>
+</resources>
