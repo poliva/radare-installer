@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="13" />
     <supports-screens 
@@ -35,5 +36,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <service android:name="UpdateCheckerService" android:process=":radare2UpdateCheck" android:icon="@drawable/icon" android:label="@string/service_name" />
     </application>
 </manifest> 

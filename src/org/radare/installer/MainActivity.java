@@ -41,6 +41,12 @@ import android.net.Uri;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.os.SystemClock;
+
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
 
@@ -82,7 +88,7 @@ public class MainActivity extends Activity {
 						boolean update = mUtils.UpdateCheck(url);
 						if (update) {
 							output ("New radare2 " + version + " version available!\n");
-							mUtils.SendNotification("Radare2 update", "New radare2 " + version + " version available!\n");
+							//mUtils.SendNotification("Radare2 update", "New radare2 " + version + " version available!\n");
 						}
 					}
 				}
@@ -375,5 +381,20 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-    
+
+	public void onResume() {
+		// if updates are enabled, make sure the alarm is set...
+		super.onResume();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		String hoursStr = prefs.getString("updates_interval", "12");
+		int hours = Integer.parseInt(hoursStr);
+		boolean perform_updates = prefs.getBoolean("perform_updates", true);
+		if (perform_updates) {
+			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+			Intent i = new Intent(this, UpdateCheckerService.class);
+			PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+			am.cancel(pi);
+			am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + hours*60*60*1000, hours*60*60*1000, pi);
+		}
+	}
 }
