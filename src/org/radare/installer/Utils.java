@@ -34,6 +34,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 
+import java.io.File;
+import android.os.Environment;
+
 public class Utils {
 
 	private Context mContext;
@@ -83,6 +86,19 @@ public class Utils {
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
 		String version = settings.getString(Key, "unknown");
 		return version;
+	}
+
+	public String GetStoragePath() {
+		String storagePath = "";
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
+		boolean use_sdcard = settings.getBoolean("use_sdcard", false);
+		if (use_sdcard) {
+			File sdCard = Environment.getExternalStorageDirectory();
+			storagePath = sdCard.getAbsolutePath() + "/org.radare.installer/";
+		} else {
+			storagePath = "/data/data/org.radare.installer/";
+		}
+		return storagePath;
 	}
 
 	public String GetArch() {

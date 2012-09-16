@@ -155,7 +155,6 @@ public class MainActivity extends Activity {
 			//outputView.setText("");
 			output ("");
 
-			final String localPath = "/data/data/org.radare.installer/radare2-android.tar.gz";
 			final CheckBox checkBox = (CheckBox) findViewById(R.id.checkbox);
 			final CheckBox checkHg = (CheckBox) findViewById(R.id.checkhg);
 
@@ -189,18 +188,43 @@ public class MainActivity extends Activity {
 						else url = "http://pof.eslack.org/tmp/radare2-0.9.1git-android-arm.tar.gz"; //for my tests
 					}
 
+					RootTools.useRoot = false;
+					// remove old traces of previous r2 install
+					exec("rm -r /data/data/org.radare.installer/radare2/");
+					exec("rm -r /data/rata/org.radare.installer/files/");
+					exec("rm /data/data/org.radare.installer/radare2-android.tar");
+					exec("rm /data/data/org.radare.installer/radare2-android.tar.gz");
+
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+					boolean use_sdcard = prefs.getBoolean("use_sdcard", false);
+
+					String storagePath = mUtils.GetStoragePath();
+
+					File dir = new File (storagePath + "/radare2/tmp");
+					dir.mkdirs();
+
 					long space = 0;
+					long minSpace = 15;
+					if (use_sdcard) {
+						exec("rm -r " + storagePath + "/org.radare.installer");
+						if (!RootTools.hasEnoughSpaceOnSdCard(minSpace)) {
+							output("Warning: low space on SDCard, installation can fail!\n");
+						}
+					}
+
 					if (checkBox.isChecked()) {
 						// getSpace needs root, only try it the symlinks checkbox has been checked
 						space = (RootTools.getSpace("/data") / 1000);
 						output("Free space in /data partition: "+ space +" MB\n");
 					}
-
 					if (space <= 0) {
 						output("Warning: could not check space in /data partition, installation can fail!\n");
-					} else if (space < 15) {
+					} else if (space < minSpace) {
 						output("Warning: low space in /data partition, installation can fail!\n");
 					}
+
+					String localPath = storagePath + "/radare2/tmp/radare2-android.tar.gz";
+
 
 					output("Downloading radare2-android... please wait\n");
 					//output("URL: "+url+"\n");
@@ -210,32 +234,33 @@ public class MainActivity extends Activity {
 					} else {
 
 						RootTools.useRoot = false;
-						// remove old traces of previous r2 install
-						exec("rm -r /data/data/org.radare.installer/radare2/");
-						exec("rm -r /data/rata/org.radare.installer/files/");
-						exec("rm /data/data/org.radare.installer/radare2-android.tar");
-						exec("rm /data/data/org.radare.installer/radare2-android.tar.gz");
+						// remove old traces of previous r2 download
+						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar");
+						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
 
 						// real download
 						download(url, localPath);
 						output("Installing radare2... please wait\n");
 
 						try {
-							unTarGz(localPath, "/data/data/org.radare.installer/");
+							unTarGz(localPath, storagePath + "/radare2/tmp/");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 
 						// make sure we delete temporary files
-						exec("rm /data/data/org.radare.installer/radare2-android.tar");
-						exec("rm /data/data/org.radare.installer/radare2-android.tar.gz");
+						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar");
+						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
 
 						// make sure bin files are executable
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/");
 						exec("chmod 755 /data/data/org.radare.installer/radare2/");
-						exec("mkdir /data/data/org.radare.installer/radare2/tmp/");
-						exec("chmod 777 /data/data/org.radare.installer/radare2/tmp/");
+						exec("mkdir -p " + storagePath + "/radare2/tmp/");
+						exec("chmod 1777 " + storagePath + "/radare2/tmp/");
+						if (use_sdcard) {
+							exec ("ln -s " + storagePath + "/radare2/tmp /data/data/org.radare.installer/radare2/tmp");
+						}
 
 						boolean symlinksCreated = false;
 						if (checkBox.isChecked()) {

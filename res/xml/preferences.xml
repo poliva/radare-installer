@@ -17,4 +17,12 @@
             android:dependency="perform_updates"
         />    
     </PreferenceCategory>
+    <PreferenceCategory android:title="Storage Settings" android:key="second_category">
+        <CheckBoxPreference
+            android:key="use_sdcard"
+            android:summary="Use SDCard instead of internal memory when possible"
+            android:title="Use external storage"
+            android:defaultValue="false"
+        />
+    </PreferenceCategory>
 </PreferenceScreen>
