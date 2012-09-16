@@ -353,6 +353,7 @@ public class MainActivity extends Activity {
         		}
 		};
 		try {
+			RootTools.getShell(RootTools.useRoot);
 			RootTools.getShell(RootTools.useRoot).add(command_out).waitForFinish();
 		} catch (Exception e) {
 			e.printStackTrace();

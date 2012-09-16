@@ -34,6 +34,14 @@ public class WebActivity extends Activity {
 		// make sure we don't start a second instance of radare webserver
 		// we can't use killradare() here because it finishes the activity
 		RootTools.useRoot = false;
+
+		// get shell first
+		try {
+			RootTools.getShell(RootTools.useRoot);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		if (RootTools.isProcessRunning("radare2")) {
 			RootTools.killProcess("radare2");
 		}
@@ -41,12 +49,21 @@ public class WebActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		String file_to_open = b.getString("filename");
 
+		//int exitcode = -1;
 		CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
 		try {
 			RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
+			//exitcode = RootTools.getShell(RootTools.useRoot).add(command).exitCode();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+/*
+		if (exitcode != 0) {
+			mUtils.myToast("Could not open file " + file_to_open, Toast.LENGTH_SHORT);
+			finish();
+		}
+*/
 /*
 		try {
 			Thread.sleep(1000);
