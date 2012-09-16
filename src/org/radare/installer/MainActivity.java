@@ -200,13 +200,10 @@ public class MainActivity extends Activity {
 
 					String storagePath = mUtils.GetStoragePath();
 
-					File dir = new File (storagePath + "/radare2/tmp");
-					dir.mkdirs();
-
 					long space = 0;
 					long minSpace = 15;
 					if (use_sdcard) {
-						exec("rm -r " + storagePath + "/org.radare.installer");
+						exec("rm -r " + storagePath);
 						if (!RootTools.hasEnoughSpaceOnSdCard(minSpace)) {
 							output("Warning: low space on SDCard, installation can fail!\n");
 						}
@@ -215,16 +212,19 @@ public class MainActivity extends Activity {
 					if (checkBox.isChecked()) {
 						// getSpace needs root, only try it the symlinks checkbox has been checked
 						space = (RootTools.getSpace("/data") / 1000);
-						output("Free space in /data partition: "+ space +" MB\n");
 					}
 					if (space <= 0) {
 						output("Warning: could not check space in /data partition, installation can fail!\n");
 					} else if (space < minSpace) {
 						output("Warning: low space in /data partition, installation can fail!\n");
+						if (!use_sdcard) output ("In case of problems, try to enable external storage in settings.\n");
 					}
 
 					String localPath = storagePath + "/radare2/tmp/radare2-android.tar.gz";
 
+					// better than shell mkdir
+					File dir = new File (storagePath + "/radare2/tmp");
+					dir.mkdirs();
 
 					output("Downloading radare2-android... please wait\n");
 					//output("URL: "+url+"\n");
@@ -256,7 +256,11 @@ public class MainActivity extends Activity {
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
 						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/");
 						exec("chmod 755 /data/data/org.radare.installer/radare2/");
-						exec("mkdir -p " + storagePath + "/radare2/tmp/");
+
+						// setup temp folder for r2
+						exec("rm -r /data/data/org.radare.installer/radare2/tmp/*");
+						exec("rm -r /data/data/org.radare.installer/radare2/tmp");
+						dir.mkdirs(); // better than shell mkdir
 						exec("chmod 1777 " + storagePath + "/radare2/tmp/");
 						if (use_sdcard) {
 							exec ("ln -s " + storagePath + "/radare2/tmp /data/data/org.radare.installer/radare2/tmp");
