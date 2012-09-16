@@ -67,14 +67,25 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		mUtils = new Utils(getApplicationContext());
+
+		CheckBox checkBox = (CheckBox) findViewById(R.id.checkbox);
+		CheckBox checkHg = (CheckBox) findViewById(R.id.checkhg);
+
+		String root = mUtils.GetPref("root");
+		if (root.equals("yes")) checkBox.setChecked(true);
+		else checkBox.setChecked(false);
+
+		String version = mUtils.GetPref("version");
+		if (version.equals("unstable")) checkHg.setChecked(true);
+		else checkHg.setChecked(false);
+
 		outputView = (TextView)findViewById(R.id.outputView);
 		remoteRunButton = (Button)findViewById(R.id.remoteRunButton);
 		remoteRunButton.setOnClickListener(onRemoteRunButtonClick);
 
 		localRunButton = (Button)findViewById(R.id.localRunButton);
 		localRunButton.setOnClickListener(onLocalRunButtonClick);
-
-		mUtils = new Utils(getApplicationContext());
 
 		if (mUtils.isInternetAvailable()) {
 			Thread thread = new Thread(new Runnable() {
@@ -234,7 +245,10 @@ public class MainActivity extends Activity {
 
 							if(!isRooted) {
 								output("\nCould not create xbin symlinks, do you have root?\n");
+								mUtils.StorePref("root","no");
 							} else { // device is rooted
+
+								mUtils.StorePref("root","yes");
 
 								RootTools.useRoot = true;
 
