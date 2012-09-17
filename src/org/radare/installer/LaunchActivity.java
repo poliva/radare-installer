@@ -41,23 +41,25 @@ public class LaunchActivity extends Activity {
 		File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
 		if (radarebin.exists()) {
 
-			// Get intent, action and MIME type
+			// Get intent, action and extras
 			Intent intent = getIntent();
 			String action = intent.getAction();
-			String type = intent.getType();
 			Bundle bundle = intent.getExtras();
 
 			setContentView(R.layout.launch);
 			String path = "/system/bin/toolbox";
-			if (Intent.ACTION_SEND.equals(action) && type.startsWith("application/")) {
+			if (Intent.ACTION_SEND.equals(action)) {
 
 				Uri uri = (Uri)bundle.get(Intent.EXTRA_STREAM);
 				path = uri.decode(uri.toString());
-				if (path.endsWith(".apk") || path.endsWith(".APK")) {
-					path = path.replace("file://", "apk://");
-				}
 				if (path.startsWith("file://")) {
 					path = path.replace("file://", "");
+				}
+				if (path.startsWith("content://")) {
+					path = path.replaceAll("content://[^/]*", "");
+				}
+				if (path.endsWith(".apk") || path.endsWith(".APK")) {
+					path = path.replaceAll("^", "apk://");
 				}
 				if (path == null) path = "/system/bin/toolbox";
 				file_to_open = (EditText) findViewById(R.id.file_to_open);
