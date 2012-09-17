@@ -184,8 +184,11 @@ public class MainActivity extends Activity {
 
 					/* fix broken stable URL in radare2 0.9 */
 					if (cpuabi.matches(".*arm.*")) {
-						if (!checkHg.isChecked()) url = "http://x90.es/radare2tar";
-						else url = "http://pof.eslack.org/tmp/radare2-0.9.1git-android-arm.tar.gz"; //for my tests
+						boolean update = mUtils.UpdateCheck(url);
+						if (!update) {
+							if (!checkHg.isChecked()) url = "http://x90.es/radare2tar";
+							else url = "http://x90.es/radare2git"; //for my tests
+						}
 					}
 
 					RootTools.useRoot = false;
