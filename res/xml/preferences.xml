@@ -25,4 +25,12 @@
             android:defaultValue="false"
         />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Webserver Settings" android:key="third_category">
+        <CheckBoxPreference
+            android:key="http_public"
+            android:summary="so you can connect from your desktop via wifi/cable"
+            android:title="Enable public HTTP server"
+            android:defaultValue="false"
+        />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -15,6 +15,9 @@ import android.webkit.WebViewClient;
 
 import android.widget.Toast;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import com.stericson.RootTools.*;
 
 public class WebActivity extends Activity {
@@ -49,7 +52,15 @@ public class WebActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		String file_to_open = b.getString("filename");
 
-		String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open + " &");
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		boolean http_public = prefs.getBoolean("http_public", false);
+
+		String http_eval = "-e http.public=false";
+		if (http_public) {
+			http_eval = "-e http.public=true";
+		}
+
+		String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 " + http_eval + " -c=h " + file_to_open + " &");
 		//String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
 /*
 		//int exitcode = -1;
