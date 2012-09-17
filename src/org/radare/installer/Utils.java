@@ -37,6 +37,8 @@ import android.app.PendingIntent;
 import java.io.File;
 import android.os.Environment;
 
+import com.stericson.RootTools.*;
+
 public class Utils {
 
 	private Context mContext;
@@ -116,7 +118,7 @@ public class Utils {
 		ConnectivityManager connectivityManager = (ConnectivityManager)mContext.getSystemService(mContext.CONNECTIVITY_SERVICE);
 		NetworkInfo info = connectivityManager.getActiveNetworkInfo();
 		if(info == null)
-		    return false;
+			return false;
 
 		return connectivityManager.getActiveNetworkInfo().isConnected();
 	}
@@ -165,5 +167,23 @@ public class Utils {
 		nm.notify( 1, notification );
 	}
 
+	public String exec(String command) {
+		final StringBuffer radare_output = new StringBuffer();
+		Command command_out = new Command(0, command)
+		{
+			@Override
+			public void output(int id, String line)
+			{
+				radare_output.append(line);
+			}
+		};
+		try {
+			RootTools.getShell(RootTools.useRoot);
+			RootTools.getShell(RootTools.useRoot).add(command_out).waitForFinish();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return radare_output.toString();
+	}
 
 }

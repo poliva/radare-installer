@@ -193,10 +193,10 @@ public class MainActivity extends Activity {
 
 					RootTools.useRoot = false;
 					// remove old traces of previous r2 install
-					exec("rm -r /data/data/org.radare.installer/radare2/");
-					exec("rm -r /data/rata/org.radare.installer/files/");
-					exec("rm /data/data/org.radare.installer/radare2-android.tar");
-					exec("rm /data/data/org.radare.installer/radare2-android.tar.gz");
+					mUtils.exec("rm -r /data/data/org.radare.installer/radare2/");
+					mUtils.exec("rm -r /data/rata/org.radare.installer/files/");
+					mUtils.exec("rm /data/data/org.radare.installer/radare2-android.tar");
+					mUtils.exec("rm /data/data/org.radare.installer/radare2-android.tar.gz");
 
 					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 					boolean use_sdcard = prefs.getBoolean("use_sdcard", false);
@@ -206,7 +206,7 @@ public class MainActivity extends Activity {
 					long space = 0;
 					long minSpace = 15;
 					if (use_sdcard) {
-						exec("rm -r " + storagePath);
+						mUtils.exec("rm -r " + storagePath);
 						if (!RootTools.hasEnoughSpaceOnSdCard(minSpace)) {
 							output("Warning: low space on SDCard, installation can fail!\n");
 						}
@@ -238,8 +238,8 @@ public class MainActivity extends Activity {
 
 						RootTools.useRoot = false;
 						// remove old traces of previous r2 download
-						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar");
-						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
+						mUtils.exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar");
+						mUtils.exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
 
 						// real download
 						download(url, localPath);
@@ -252,21 +252,21 @@ public class MainActivity extends Activity {
 						}
 
 						// make sure we delete temporary files
-						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar");
-						exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
+						mUtils.exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar");
+						mUtils.exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
 
-						// make sure bin files are executable
-						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
-						exec("chmod 755 /data/data/org.radare.installer/radare2/bin/");
-						exec("chmod 755 /data/data/org.radare.installer/radare2/");
+						// make sure bin files are mUtils.executable
+						mUtils.exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
+						mUtils.exec("chmod 755 /data/data/org.radare.installer/radare2/bin/");
+						mUtils.exec("chmod 755 /data/data/org.radare.installer/radare2/");
 
 						// setup temp folder for r2
-						exec("rm -r /data/data/org.radare.installer/radare2/tmp/*");
-						exec("rm -r /data/data/org.radare.installer/radare2/tmp");
+						mUtils.exec("rm -r /data/data/org.radare.installer/radare2/tmp/*");
+						mUtils.exec("rm -r /data/data/org.radare.installer/radare2/tmp");
 						dir.mkdirs(); // better than shell mkdir
-						exec("chmod 1777 " + storagePath + "/radare2/tmp/");
+						mUtils.exec("chmod 1777 " + storagePath + "/radare2/tmp/");
 						if (use_sdcard) {
-							exec ("ln -s " + storagePath + "/radare2/tmp /data/data/org.radare.installer/radare2/tmp");
+							mUtils.exec ("ln -s " + storagePath + "/radare2/tmp /data/data/org.radare.installer/radare2/tmp");
 						}
 
 						boolean symlinksCreated = false;
@@ -287,14 +287,14 @@ public class MainActivity extends Activity {
 								output("\nCreating xbin symlinks...\n");
 								RootTools.remount("/system", "rw");
 								// remove old path
-								exec("rm -r /data/local/radare2");
+								mUtils.exec("rm -r /data/local/radare2");
 								// remove old symlinks in case they exist in old location
-								exec("rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc");
+								mUtils.exec("rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc");
 
 								if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
 
 									// show output for the first link, in case there's any error with su
-									output = exec("ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1");
+									output = mUtils.exec("ln -s /data/data/org.radare.installer/radare2/bin/radare2 /system/xbin/radare2 2>&1");
 									if (!output.equals("")) output(output);
 
 									String file;
@@ -303,7 +303,7 @@ public class MainActivity extends Activity {
 									for (int i = 0; i < listOfFiles.length; i++) {
 										if (listOfFiles[i].isFile()) {
 											file = listOfFiles[i].getName();
-											exec("ln -s /data/data/org.radare.installer/radare2/bin/" + file + " /system/xbin/" + file);
+											mUtils.exec("ln -s /data/data/org.radare.installer/radare2/bin/" + file + " /system/xbin/" + file);
 											output("linking /system/xbin/" + file + "\n");
 										}
 									}
@@ -330,7 +330,7 @@ public class MainActivity extends Activity {
 							localRunButton.setClickable(true);
 							if (symlinksCreated == false) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
 							output("\nTesting installation:\n\n$ radare2 -v\n");
-							output = exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");
+							output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");
 							if (!output.equals("")) output(output);
 							else output("Radare was not installed successfully, make sure you have enough space in /data and try again.");
 						}
@@ -345,24 +345,6 @@ public class MainActivity extends Activity {
 	};
 
 
-	private String exec(String command) {
-		final StringBuffer radare_output = new StringBuffer();
-		Command command_out = new Command(0, command)
-		{
-        		@Override
-        		public void output(int id, String line)
-        		{
-				radare_output.append(line);
-        		}
-		};
-		try {
-			RootTools.getShell(RootTools.useRoot);
-			RootTools.getShell(RootTools.useRoot).add(command_out).waitForFinish();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return radare_output.toString();
-	}
 
 	private void output(final String str) {
 		Runnable proc = new Runnable() {
