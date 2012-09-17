@@ -52,8 +52,8 @@ public class LaunchActivity extends Activity {
 			if (Intent.ACTION_SEND.equals(action) && type.startsWith("application/")) {
 
 				Uri uri = (Uri)bundle.get(Intent.EXTRA_STREAM);
-				path = uri.toString();
-				if (path.endsWith(".apk")) {
+				path = uri.decode(uri.toString());
+				if (path.endsWith(".apk") || path.endsWith(".APK")) {
 					path = path.replace("file://", "apk://");
 				}
 				if (path.startsWith("file://")) {
@@ -85,7 +85,7 @@ public class LaunchActivity extends Activity {
 
 				file_to_open = (EditText) findViewById(R.id.file_to_open);
 				Bundle b = new Bundle();
-				b.putString("filename", file_to_open.getText().toString());
+				b.putString("filename", '"' + file_to_open.getText().toString() + '"');
 
 				switch (selectedId) {
 					case R.id.radiobutton_web :
