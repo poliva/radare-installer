@@ -31,8 +31,6 @@ public class WebActivity extends Activity {
 
 		setContentView(R.layout.webactivity);
 
-		// make sure we don't start a second instance of radare webserver
-		// we can't use killradare() here because it finishes the activity
 		RootTools.useRoot = false;
 
 		// get shell first
@@ -42,6 +40,8 @@ public class WebActivity extends Activity {
 			e.printStackTrace();
 		}
 
+		// make sure we don't start a second instance of radare webserver
+		// we can't use killradare() here because it finishes the activity
 		if (RootTools.isProcessRunning("radare2")) {
 			RootTools.killProcess("radare2");
 		}
@@ -49,28 +49,33 @@ public class WebActivity extends Activity {
 		Bundle b = getIntent().getExtras();
 		String file_to_open = b.getString("filename");
 
+		String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open + " &");
+		//String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
+/*
 		//int exitcode = -1;
 		CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
+		//CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open + " &");
 		try {
 			RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
 			//exitcode = RootTools.getShell(RootTools.useRoot).add(command).exitCode();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+*/
 /*
 		if (exitcode != 0) {
 			mUtils.myToast("Could not open file " + file_to_open, Toast.LENGTH_SHORT);
 			finish();
 		}
 */
-/*
+
+		// if radare2 is launched in background we need to wait
+		// for it to start before opening the webview
 		try {
 			Thread.sleep(1000);
 		} catch (Exception e) {
                         e.printStackTrace();
                 }
-*/
 
 		if (RootTools.isProcessRunning("radare2")) {
 			webview = (WebView) findViewById(R.id.webview);
@@ -105,6 +110,12 @@ public class WebActivity extends Activity {
 		{
 			view.loadUrl(url);
 			return true;
+		}
+
+		@Override
+		public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+			mUtils.myToast("Error: radare2 webserver did not start", Toast.LENGTH_LONG);
+			finish();
 		}
 	}
 
