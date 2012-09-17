@@ -16,6 +16,10 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.EditText;
 
+import android.widget.TextView;
+import android.widget.TextView.BufferType;
+import android.net.Uri;
+
 import android.widget.Toast;
 import java.io.File;
 
@@ -36,7 +40,30 @@ public class LaunchActivity extends Activity {
 
 		File radarebin = new File("/data/data/org.radare.installer/radare2/bin/radare2");
 		if (radarebin.exists()) {
+
+			// Get intent, action and MIME type
+			Intent intent = getIntent();
+			String action = intent.getAction();
+			String type = intent.getType();
+			Bundle bundle = intent.getExtras();
+
 			setContentView(R.layout.launch);
+			String path = "/system/bin/toolbox";
+			if (Intent.ACTION_SEND.equals(action) && type.startsWith("application/")) {
+
+				Uri uri = (Uri)bundle.get(Intent.EXTRA_STREAM);
+				path = uri.toString();
+				if (path.endsWith(".apk")) {
+					path = path.replace("file://", "apk://");
+				}
+				if (path.startsWith("file://")) {
+					path = path.replace("file://", "");
+				}
+				if (path == null) path = "/system/bin/toolbox";
+				file_to_open = (EditText) findViewById(R.id.file_to_open);
+				file_to_open.setText(path, TextView.BufferType.EDITABLE);
+			} 
+
 			addListenerOnButton();
 		} else {
 			mUtils.myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
