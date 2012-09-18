@@ -18,6 +18,12 @@ import android.widget.Toast;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Enumeration;
+import java.net.NetworkInterface;
+import java.net.InetAddress;
+import java.net.SocketException;
+import org.apache.http.conn.util.InetAddressUtils;
+
 import com.stericson.RootTools.*;
 
 public class WebActivity extends Activity {
@@ -58,6 +64,10 @@ public class WebActivity extends Activity {
 		String http_eval = "-e http.public=false";
 		if (http_public) {
 			http_eval = "-e http.public=true";
+			String localip = getLocalIpAddress();
+			if (localip != null) {
+				mUtils.myToast("r2 http server\n" + localip + ":9090", Toast.LENGTH_LONG);
+			}
 		}
 
 		String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 " + http_eval + " -c=h " + file_to_open + " &");
@@ -139,4 +149,21 @@ public class WebActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
+	public String getLocalIpAddress() {
+		try {
+			String ipv4;
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress() && InetAddressUtils.isIPv4Address(ipv4=inetAddress.getHostAddress())) {
+						return ipv4;
+					}
+				}
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
