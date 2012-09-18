@@ -20,6 +20,9 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.net.Uri;
 
+import android.view.Menu;
+import android.view.MenuItem;
+
 import android.widget.Toast;
 import java.io.File;
 
@@ -103,5 +106,21 @@ public class LaunchActivity extends Activity {
 				}
 			}
 		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, 0, 0, "Settings");
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case 0:
+				startActivity(new Intent(this, SettingsActivity.class));
+				return true;
+		}
+		return false;
 	}
 }
