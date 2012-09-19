@@ -67,7 +67,7 @@ public class WebActivity extends Activity {
 
 		String http_eval = "";
 		if (http_public) {
-			http_eval = "-e http.public=true";  // radare2 is currently not starting webserver with this parameter
+			http_eval = "-c 'e http.public=1'";
 			String localip = getLocalIpAddress();
 			if (localip != null) {
 				mUtils.myToast("r2 http server\n" + localip + ":9090", Toast.LENGTH_LONG);
