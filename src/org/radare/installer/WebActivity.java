@@ -26,8 +26,11 @@ import org.apache.http.conn.util.InetAddressUtils;
 
 import com.stericson.RootTools.*;
 
+import android.util.Log;
+
 public class WebActivity extends Activity {
 
+	private static final String TAG = "radare2-WebActivity";
 	private Utils mUtils;
 
         WebView webview;
@@ -53,6 +56,7 @@ public class WebActivity extends Activity {
 		// we can't use killradare() here because it finishes the activity
 		if (RootTools.isProcessRunning("radare2")) {
 			RootTools.killProcess("radare2");
+			Log.v(TAG, "killed radare2");
 		}
 
 		Bundle b = getIntent().getExtras();
@@ -67,13 +71,15 @@ public class WebActivity extends Activity {
 			String localip = getLocalIpAddress();
 			if (localip != null) {
 				mUtils.myToast("r2 http server\n" + localip + ":9090", Toast.LENGTH_LONG);
+				Log.v(TAG, "ip address: " + localip);
 			}
 		}
+		Log.v(TAG, "http_eval: " + http_eval);
 
-		mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + http_eval + " " + file_to_open );
+		//mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + http_eval + " " + file_to_open );
 
-/*
 		String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 " + http_eval + " -c=h " + file_to_open + " &");
+		Log.v(TAG, "radare2 started");
 
 		// if radare2 is launched in background we need to wait
 		// for it to start before opening the webview
@@ -82,25 +88,30 @@ public class WebActivity extends Activity {
 		} catch (Exception e) {
                         e.printStackTrace();
                 }
-*/
 
 		if (RootTools.isProcessRunning("radare2")) {
 			webview = (WebView) findViewById(R.id.webview);
 			webview.setWebViewClient(new RadareWebViewClient());
 			webview.getSettings().setJavaScriptEnabled(true);
 			webview.loadUrl("http://localhost:9090");
+			Log.v(TAG, "WebView started successfully");
 		} else {
+			Log.v(TAG, "could not open file" + file_to_open);
 			mUtils.myToast("Could not open file " + file_to_open, Toast.LENGTH_SHORT);
+			Log.v(TAG, "finishing WebActivity");
 			finish();
 		}
 
 	}
 
 	private void killradare() {
+		Log.v(TAG, "killdadare() called");
 		RootTools.useRoot = false;
 		if (RootTools.isProcessRunning("radare2")) {
 			RootTools.killProcess("radare2");
+			Log.v(TAG, "killdadare() killed radare2");
 		}
+		Log.v(TAG, "killradare() finishing WebActivity");
 		finish();
 	}
 
@@ -108,6 +119,7 @@ public class WebActivity extends Activity {
 	public void onStop()
 	{
 		super.onStop();
+		Log.v(TAG, "onStop() called");
 		killradare();
 	}
 
@@ -121,6 +133,7 @@ public class WebActivity extends Activity {
 
 		@Override
 		public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+			Log.v(TAG, "Error: radare2 webserver did not start");
 			mUtils.myToast("Error: radare2 webserver did not start", Toast.LENGTH_LONG);
 			finish();
 		}
