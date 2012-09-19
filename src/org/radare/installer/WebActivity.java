@@ -61,34 +61,19 @@ public class WebActivity extends Activity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		boolean http_public = prefs.getBoolean("http_public", false);
 
-		String http_eval = "-e http.public=false";
+		String http_eval = "";
 		if (http_public) {
-			http_eval = "-e http.public=true";
+			http_eval = "-e http.public=true";  // radare2 is currently not starting webserver with this parameter
 			String localip = getLocalIpAddress();
 			if (localip != null) {
 				mUtils.myToast("r2 http server\n" + localip + ":9090", Toast.LENGTH_LONG);
 			}
 		}
 
+		mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + http_eval + " " + file_to_open );
+
+/*
 		String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 " + http_eval + " -c=h " + file_to_open + " &");
-		//String output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
-/*
-		//int exitcode = -1;
-		CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open );
-		//CommandCapture command = new CommandCapture(0, "/data/data/org.radare.installer/radare2/bin/radare2 -c=h " + file_to_open + " &");
-		try {
-			RootTools.getShell(RootTools.useRoot).add(command).waitForFinish();
-			//exitcode = RootTools.getShell(RootTools.useRoot).add(command).exitCode();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-*/
-/*
-		if (exitcode != 0) {
-			mUtils.myToast("Could not open file " + file_to_open, Toast.LENGTH_SHORT);
-			finish();
-		}
-*/
 
 		// if radare2 is launched in background we need to wait
 		// for it to start before opening the webview
@@ -97,6 +82,7 @@ public class WebActivity extends Activity {
 		} catch (Exception e) {
                         e.printStackTrace();
                 }
+*/
 
 		if (RootTools.isProcessRunning("radare2")) {
 			webview = (WebView) findViewById(R.id.webview);
