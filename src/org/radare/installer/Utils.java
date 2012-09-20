@@ -152,8 +152,8 @@ public class Utils {
 			String ETag = GetPref("ETag");
 			if (!ETag.equals(mETag)) {
 				update = true;
-				if (mETag.equals("\"3401f-1fba4e-4c8c2d3f37100\"")) update = false; // for my tests (git)
-				if (mETag.equals("\"1a6f2-affb8c-4b366f9fd3640\"")) update = false; // for my tests (stable)
+				//if (mETag.equals("\"3401f-1fba4e-4c8c2d3f37100\"")) update = false; // for my tests (git)
+				//if (mETag.equals("\"1a6f2-affb8c-4b366f9fd3640\"")) update = false; // for my tests (stable)
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

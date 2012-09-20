@@ -26,7 +26,6 @@ android:padding="15dp"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="symlink binaries to xbin (needs root)"
-		android:checked="true"
 		android:textColor="#ff000000"
 		/>
 
@@ -42,6 +41,7 @@ android:padding="15dp"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="install r2-unstable (development ver.)"
+		android:checked="true"
 		android:textColor="#ff000000"
 		/>
 

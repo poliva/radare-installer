@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
 
 		String version = mUtils.GetPref("version");
 		if (version.equals("unstable")) checkHg.setChecked(true);
-		else checkHg.setChecked(false);
+		if (version.equals("stable")) checkHg.setChecked(false);
 
 		outputView = (TextView)findViewById(R.id.outputView);
 		remoteRunButton = (Button)findViewById(R.id.remoteRunButton);
@@ -169,13 +169,14 @@ public class MainActivity extends Activity {
 					url = "http://radare.org/get/pkg/android/" + arch + "/" + hg;
 
 					/* fix broken stable URL in radare2 0.9 */
+					/*
 					if (cpuabi.matches(".*arm.*")) {
 						boolean update = mUtils.UpdateCheck(url);
 						if (!update) {
 							if (!checkHg.isChecked()) url = "http://x90.es/radare2tar";
 							else url = "http://x90.es/radare2git"; //for my tests
 						}
-					}
+					} */
 
 					RootTools.useRoot = false;
 					// remove old traces of previous r2 install
@@ -233,8 +234,12 @@ public class MainActivity extends Activity {
 						mUtils.exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
 
 						// real download
-						download(url, localPath);
-						output("Installing radare2... please wait\n");
+						boolean downloadFinished = download(url, localPath);
+						if (!downloadFinished) {
+							output("ERROR: download could not complete\n");
+						} else {
+							output("Installing radare2... please wait\n");
+						}
 
 						try {
 							unTarGz(localPath, storagePath + "/radare2/tmp/");
@@ -377,7 +382,7 @@ public class MainActivity extends Activity {
 		new File(tempPath).delete();
 	}
 
-	private void download(String urlStr, String localPath) {
+	private boolean download(String urlStr, String localPath) {
 		try {
 			URL url = new URL(urlStr);
 			HttpURLConnection urlconn = (HttpURLConnection)url.openConnection();
@@ -397,8 +402,10 @@ public class MainActivity extends Activity {
 			out.close();
 			in.close();
 			urlconn.disconnect();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
