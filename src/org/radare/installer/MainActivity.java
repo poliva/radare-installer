@@ -324,7 +324,7 @@ public class MainActivity extends Activity {
 							output("\n\nsomething went wrong during installation :(\n");
 						} else {
 							localRunButton.setClickable(true);
-							if (symlinksCreated == false) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
+							//if (!symlinksCreated) output("\nRadare2 is installed in:\n   /data/data/org.radare.installer/radare2/\n");
 							output("\nTesting installation:\n\n$ radare2 -v\n");
 							output = mUtils.exec("/data/data/org.radare.installer/radare2/bin/radare2 -v");
 							if (!output.equals("")) output(output);
