@@ -17,13 +17,7 @@
 	android:largeScreens="true"
 	android:anyDensity="true" />
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".MainActivity" android:label="@string/app_name" android:launchMode="singleInstance">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".LaunchActivity" android:label="radare2 launcher">
+        <activity android:name=".LaunchActivity" android:label="radare2 android">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,9 +28,10 @@
 		<data android:mimeType="application/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".WebActivity" android:label="radare2 web" android:launchMode="singleInstance" />
+        <activity android:name=".MainActivity" android:label="radare2 installer" android:launchMode="singleInstance" android:configChanges="orientation|screenSize" />
+        <activity android:name=".WebActivity" android:label="radare2 web" android:launchMode="singleInstance" android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity android:name=".LauncherActivity" android:label="radare2 console" android:excludeFromRecents="true" android:launchMode="singleInstance" />
-	<activity android:name=".SettingsActivity" android:label="radare2 installer settings" android:excludeFromRecents="true" />
+	<activity android:name=".SettingsActivity" android:label="radare2 installer settings" />
         <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

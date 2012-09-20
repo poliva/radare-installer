@@ -13,7 +13,7 @@ uninstall:
 
 install: uninstall build
 	adb install bin/radare2\ installer-${BUILD}.apk
-	adb shell 'LD_LIBRARY_PATH=/system/lib am start -n org.radare.installer/.MainActivity'
+	adb shell 'LD_LIBRARY_PATH=/system/lib am start -n org.radare.installer/.LaunchActivity'
 
 test:
 	adb shell "su -c 'LD_LIBRARY_PATH=/system/lib pm uninstall org.radare.installer'"
@@ -23,6 +23,6 @@ test:
 	adb shell rm /sdcard/radare2\ installer-${BUILD}.apk
 	adb push bin/radare2\ installer-${BUILD}.apk /sdcard/
 	adb shell "su -c 'LD_LIBRARY_PATH=/system/lib pm install /sdcard/radare2\ installer-${BUILD}.apk'"
-	adb shell 'LD_LIBRARY_PATH=/system/lib am start -n org.radare.installer/.MainActivity'
+	adb shell 'LD_LIBRARY_PATH=/system/lib am start -n org.radare.installer/.LaunchActivity'
 	
 

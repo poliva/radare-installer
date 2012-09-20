@@ -50,7 +50,18 @@ public class LaunchActivity extends Activity {
 			Bundle bundle = intent.getExtras();
 
 			setContentView(R.layout.launch);
-			String path = "/system/bin/toolbox";
+
+			radiogroup = (RadioGroup) findViewById(R.id.radiogroup1);
+			String open_mode = mUtils.GetPref("open_mode");
+			if (open_mode.equals("web")) {
+				radiogroup.check(R.id.radiobutton_web);
+			}
+			if (open_mode.equals("console")) {
+				radiogroup.check(R.id.radiobutton_console);
+			}
+
+			String path = mUtils.GetPref("last_opened");
+			if (path.equals("unknown")) path = "/system/bin/toolbox";
 			if (Intent.ACTION_SEND.equals(action)) {
 
 				Uri uri = (Uri)bundle.get(Intent.EXTRA_STREAM);
@@ -65,13 +76,14 @@ public class LaunchActivity extends Activity {
 					path = path.replaceAll("^", "apk://");
 				}
 				if (path == null) path = "/system/bin/toolbox";
-				file_to_open = (EditText) findViewById(R.id.file_to_open);
-				file_to_open.setText(path, TextView.BufferType.EDITABLE);
 			} 
-
+			file_to_open = (EditText) findViewById(R.id.file_to_open);
+			file_to_open.setText(path, TextView.BufferType.EDITABLE);
 			addListenerOnButton();
 		} else {
 			mUtils.myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
+			Intent i = new Intent(LaunchActivity.this, MainActivity.class);
+			startActivity(i);
 			finish();
 		}
 	}
@@ -91,14 +103,17 @@ public class LaunchActivity extends Activity {
 				file_to_open = (EditText) findViewById(R.id.file_to_open);
 				Bundle b = new Bundle();
 				b.putString("filename", '"' + file_to_open.getText().toString() + '"');
+				mUtils.StorePref("last_opened",file_to_open.getText().toString());
 
 				switch (selectedId) {
 					case R.id.radiobutton_web :
+						mUtils.StorePref("open_mode","web");
 						Intent intent1 = new Intent(LaunchActivity.this, WebActivity.class);
 						intent1.putExtras(b);
 						startActivity(intent1);
 					break;
 					case R.id.radiobutton_console :
+						mUtils.StorePref("open_mode","console");
 						Intent intent2 = new Intent(LaunchActivity.this, LauncherActivity.class);
 						intent2.putExtras(b);
 						startActivity(intent2);
@@ -111,6 +126,7 @@ public class LaunchActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(Menu.NONE, 0, 0, "Settings");
+		menu.add(Menu.NONE, 1, 1, "r2 Installer");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -119,6 +135,9 @@ public class LaunchActivity extends Activity {
 		switch (item.getItemId()) {
 			case 0:
 				startActivity(new Intent(this, SettingsActivity.class));
+				return true;
+			case 1:
+				startActivity(new Intent(this, MainActivity.class));
 				return true;
 		}
 		return false;
