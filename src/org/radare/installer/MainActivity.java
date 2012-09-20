@@ -4,49 +4,32 @@ radare2 installer for Android
 */
 package org.radare.installer;
 
-import org.radare.installer.Utils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.DataOutputStream;
-
-import java.util.zip.GZIPInputStream;
-
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.radare.installer.R;
-
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.content.Context;
-import android.os.Build;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.zip.GZIPInputStream;
 
-import android.content.Intent;
-import android.net.Uri;
-
-import android.view.Menu;
-import android.view.MenuItem;
-
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.os.SystemClock;
-
+import org.radare.installer.Utils;
 import com.ice.tar.*;
 import com.stericson.RootTools.*;
 
