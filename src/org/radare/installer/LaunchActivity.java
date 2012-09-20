@@ -50,7 +50,8 @@ public class LaunchActivity extends Activity {
 			Bundle bundle = intent.getExtras();
 
 			setContentView(R.layout.launch);
-			String path = "/system/bin/toolbox";
+			String path = mUtils.GetPref("last_opened");
+			if (path.equals("unknown")) path = "/system/bin/toolbox";
 			if (Intent.ACTION_SEND.equals(action)) {
 
 				Uri uri = (Uri)bundle.get(Intent.EXTRA_STREAM);
@@ -65,10 +66,9 @@ public class LaunchActivity extends Activity {
 					path = path.replaceAll("^", "apk://");
 				}
 				if (path == null) path = "/system/bin/toolbox";
-				file_to_open = (EditText) findViewById(R.id.file_to_open);
-				file_to_open.setText(path, TextView.BufferType.EDITABLE);
 			} 
-
+			file_to_open = (EditText) findViewById(R.id.file_to_open);
+			file_to_open.setText(path, TextView.BufferType.EDITABLE);
 			addListenerOnButton();
 		} else {
 			mUtils.myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
@@ -93,6 +93,7 @@ public class LaunchActivity extends Activity {
 				file_to_open = (EditText) findViewById(R.id.file_to_open);
 				Bundle b = new Bundle();
 				b.putString("filename", '"' + file_to_open.getText().toString() + '"');
+				mUtils.StorePref("last_opened",file_to_open.getText().toString());
 
 				switch (selectedId) {
 					case R.id.radiobutton_web :
