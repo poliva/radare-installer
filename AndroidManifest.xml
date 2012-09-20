@@ -28,8 +28,8 @@
 		<data android:mimeType="application/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" android:label="radare2 installer" android:launchMode="singleInstance" />
-        <activity android:name=".WebActivity" android:label="radare2 web" android:launchMode="singleInstance" />
+        <activity android:name=".MainActivity" android:label="radare2 installer" android:launchMode="singleInstance" android:configChanges="orientation|screenSize" />
+        <activity android:name=".WebActivity" android:label="radare2 web" android:launchMode="singleInstance" android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity android:name=".LauncherActivity" android:label="radare2 console" android:excludeFromRecents="true" android:launchMode="singleInstance" />
 	<activity android:name=".SettingsActivity" android:label="radare2 installer settings" />
         <receiver android:name=".BootReceiver">
