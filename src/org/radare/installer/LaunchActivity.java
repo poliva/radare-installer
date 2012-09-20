@@ -72,6 +72,8 @@ public class LaunchActivity extends Activity {
 			addListenerOnButton();
 		} else {
 			mUtils.myToast("Please install radare2 first!", Toast.LENGTH_SHORT);
+			Intent i = new Intent(LaunchActivity.this, MainActivity.class);
+			startActivity(i);
 			finish();
 		}
 	}
@@ -111,6 +113,7 @@ public class LaunchActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(Menu.NONE, 0, 0, "Settings");
+		menu.add(Menu.NONE, 1, 1, "r2 Installer");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -119,6 +122,9 @@ public class LaunchActivity extends Activity {
 		switch (item.getItemId()) {
 			case 0:
 				startActivity(new Intent(this, SettingsActivity.class));
+				return true;
+			case 1:
+				startActivity(new Intent(this, MainActivity.class));
 				return true;
 		}
 		return false;
