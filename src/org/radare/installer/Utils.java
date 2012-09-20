@@ -37,6 +37,8 @@ import android.app.PendingIntent;
 import java.io.File;
 import android.os.Environment;
 
+import android.os.StatFs;
+
 import com.stericson.RootTools.*;
 
 public class Utils {
@@ -101,6 +103,19 @@ public class Utils {
 			storagePath = "/data/data/org.radare.installer/";
 		}
 		return storagePath;
+	}
+
+	public long getFreeSpace(String partition) {
+		try {
+			StatFs stat = new StatFs(partition);
+			long blockSizeInBytes = stat.getBlockSize();
+			long availableBlocks = stat.getAvailableBlocks();
+			long freeSpaceInBytes = availableBlocks * blockSizeInBytes;
+			return freeSpaceInBytes;
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			return 0;
+		}
 	}
 
 	public String GetArch() {

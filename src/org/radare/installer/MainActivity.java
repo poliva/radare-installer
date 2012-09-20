@@ -87,6 +87,8 @@ public class MainActivity extends Activity {
 		localRunButton = (Button)findViewById(R.id.localRunButton);
 		localRunButton.setOnClickListener(onLocalRunButtonClick);
 
+		output ("Welcome to radare2 installer!\nMake your selections on the checkbox above and click the INSTALL button to begin.\nYou can access more settings by pressing the menu button.\n\n");
+
 		if (mUtils.isInternetAvailable()) {
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
@@ -170,7 +172,7 @@ public class MainActivity extends Activity {
 					output ("Detected CPU: " + cpuabi + " (" + arch +")\n");
 
 					if (checkHg.isChecked()) {
-						output("Download: unstable/development version from nightly build.\nNote: this version can be broken!\n");
+						output("Download: unstable/development version\n");
 						hg = "unstable";
 					} else {
 						output("Download: stable version\n");
@@ -205,32 +207,37 @@ public class MainActivity extends Activity {
 
 					long space = 0;
 					long minSpace = 15;
-					if (use_sdcard) {
-						mUtils.exec("rm -r " + storagePath);
-						if (!RootTools.hasEnoughSpaceOnSdCard(minSpace)) {
-							output("Warning: low space on SDCard, installation can fail!\n");
-						}
+
+					space = (mUtils.getFreeSpace("/data") / (1024*1024));
+					output("Free space on data partition: " + space + "Mb\n");
+
+					if (space <= 0) {
+						output("Warning: could not check space in data partition\n");
+					} else if (space < minSpace) {
+						output("Warning: low space on data partition\n");
+						if (!use_sdcard) output ("If install fails, try to enable external storage in settings.\n");
 					}
 
-					if (checkBox.isChecked()) {
-						// getSpace needs root, only try it the symlinks checkbox has been checked
-						space = (RootTools.getSpace("/data") / 1000);
-					}
-					if (space <= 0) {
-						output("Warning: could not check space in /data partition, installation can fail!\n");
-					} else if (space < minSpace) {
-						output("Warning: low space in /data partition, installation can fail!\n");
-						if (!use_sdcard) output ("In case of problems, try to enable external storage in settings.\n");
+					if (use_sdcard) {
+						mUtils.exec("rm -r " + storagePath);
+						//output("StoragePath = " + storagePath + "\n");
+						space = (mUtils.getFreeSpace(storagePath.replace("/org.radare.installer/","")) / (1024*1024));
+						output("Free space on external storage: " + space + "Mb\n");
+						if (space < minSpace) {	
+							output("Warning: low space on external storage\n");
+						}
 					}
 
 					String localPath = storagePath + "/radare2/tmp/radare2-android.tar.gz";
 
 					// better than shell mkdir
 					File dir = new File (storagePath + "/radare2/tmp");
-					dir.mkdirs();
-
-					output("Downloading radare2-android... please wait\n");
-					//output("URL: "+url+"\n");
+					boolean storageWriteable = dir.mkdirs();
+					if (!storageWriteable) {
+						output("ERROR: could not write to storage!\n");
+					} else {
+						output("Downloading radare2-android... please wait\n");
+					}
 
 					if (mUtils.isInternetAvailable() == false) {
 						output("\nCan't connect to download server. Check that internet connection is available.\n");
@@ -276,7 +283,7 @@ public class MainActivity extends Activity {
 							isRooted = RootTools.isAccessGiven();
 
 							if(!isRooted) {
-								output("\nCould not create xbin symlinks, do you have root?\n");
+								output("\nCould not create xbin symlinks, got root?\n");
 								mUtils.StorePref("root","no");
 							} else { // device is rooted
 
