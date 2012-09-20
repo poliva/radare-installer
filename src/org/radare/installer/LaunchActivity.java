@@ -50,6 +50,16 @@ public class LaunchActivity extends Activity {
 			Bundle bundle = intent.getExtras();
 
 			setContentView(R.layout.launch);
+
+			radiogroup = (RadioGroup) findViewById(R.id.radiogroup1);
+			String open_mode = mUtils.GetPref("open_mode");
+			if (open_mode.equals("web")) {
+				radiogroup.check(R.id.radiobutton_web);
+			}
+			if (open_mode.equals("console")) {
+				radiogroup.check(R.id.radiobutton_console);
+			}
+
 			String path = mUtils.GetPref("last_opened");
 			if (path.equals("unknown")) path = "/system/bin/toolbox";
 			if (Intent.ACTION_SEND.equals(action)) {
@@ -97,11 +107,13 @@ public class LaunchActivity extends Activity {
 
 				switch (selectedId) {
 					case R.id.radiobutton_web :
+						mUtils.StorePref("open_mode","web");
 						Intent intent1 = new Intent(LaunchActivity.this, WebActivity.class);
 						intent1.putExtras(b);
 						startActivity(intent1);
 					break;
 					case R.id.radiobutton_console :
+						mUtils.StorePref("open_mode","console");
 						Intent intent2 = new Intent(LaunchActivity.this, LauncherActivity.class);
 						intent2.putExtras(b);
 						startActivity(intent2);
