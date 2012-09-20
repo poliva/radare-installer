@@ -94,13 +94,14 @@ public class MainActivity extends Activity {
 				public void run() {
 					String version = mUtils.GetPref("version");
 					String ETag = mUtils.GetPref("ETag");
-					if (!version.equals("unknown") && !ETag.equals("unknown")) {
+					RootTools.useRoot = false;
+					if (!version.equals("unknown") && !ETag.equals("unknown") && RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
 						output ("radare2 " + version + " is installed.\n");
 						String arch = mUtils.GetArch();
 						String url = "http://radare.org/get/pkg/android/" + arch + "/" + version;
 						boolean update = mUtils.UpdateCheck(url);
 						if (update) {
-							output ("New radare2 " + version + " version available!\n");
+							output ("New radare2 " + version + " version available!\nClick INSTALL to update now.\n");
 							//mUtils.SendNotification("Radare2 update", "New radare2 " + version + " version available!\n");
 						}
 					}
