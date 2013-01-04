@@ -217,7 +217,8 @@ public class MainActivity extends Activity {
 
 					// better than shell mkdir
 					File dir = new File (storagePath + "/radare2/tmp");
-					boolean storageWriteable = dir.mkdirs();
+					dir.mkdirs();
+					boolean storageWriteable = dir.isDirectory();
 					if (!storageWriteable) {
 						output("ERROR: could not write to storage!\n");
 					} else {
