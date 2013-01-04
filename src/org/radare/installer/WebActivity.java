@@ -93,6 +93,10 @@ public class WebActivity extends Activity {
 			webview = (WebView) findViewById(R.id.webview);
 			webview.setWebViewClient(new RadareWebViewClient());
 			webview.getSettings().setJavaScriptEnabled(true);
+			webview.getSettings().setBuiltInZoomControls(true);
+			webview.getSettings().setSupportZoom(true);
+			webview.getSettings().setUseWideViewPort(true);
+			webview.getSettings().setLoadWithOverviewMode(true);
 			webview.loadUrl("http://localhost:9090");
 			Log.v(TAG, "WebView started successfully");
 		} else {
