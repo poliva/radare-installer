@@ -180,8 +180,8 @@ public class MainActivity extends Activity {
 
 					RootTools.useRoot = false;
 					// remove old traces of previous r2 install
-					mUtils.exec("rm -r /data/data/org.radare.installer/radare2/");
-					mUtils.exec("rm -r /data/rata/org.radare.installer/files/");
+					mUtils.exec("rm -rf /data/data/org.radare.installer/radare2/");
+					mUtils.exec("rm -rf /data/rata/org.radare.installer/files/");
 					mUtils.exec("rm /data/data/org.radare.installer/radare2-android.tar");
 					mUtils.exec("rm /data/data/org.radare.installer/radare2-android.tar.gz");
 
@@ -204,7 +204,7 @@ public class MainActivity extends Activity {
 					}
 
 					if (use_sdcard) {
-						mUtils.exec("rm -r " + storagePath);
+						mUtils.exec("rm -rf " + storagePath);
 						//output("StoragePath = " + storagePath + "\n");
 						space = (mUtils.getFreeSpace(storagePath.replace("/org.radare.installer/","")) / (1024*1024));
 						output("Free space on external storage: " + space + "Mb\n");
@@ -257,8 +257,8 @@ public class MainActivity extends Activity {
 						mUtils.exec("chmod 755 /data/data/org.radare.installer/radare2/");
 
 						// setup temp folder for r2
-						mUtils.exec("rm -r /data/data/org.radare.installer/radare2/tmp/*");
-						mUtils.exec("rm -r /data/data/org.radare.installer/radare2/tmp");
+						mUtils.exec("rm -rf /data/data/org.radare.installer/radare2/tmp/*");
+						mUtils.exec("rm -rf /data/data/org.radare.installer/radare2/tmp");
 						dir.mkdirs(); // better than shell mkdir
 						mUtils.exec("chmod 1777 " + storagePath + "/radare2/tmp/");
 						if (use_sdcard) {
@@ -283,9 +283,9 @@ public class MainActivity extends Activity {
 								output("\nCreating xbin symlinks...\n");
 								RootTools.remount("/system", "rw");
 								// remove old path
-								mUtils.exec("rm -r /data/local/radare2");
+								mUtils.exec("rm -rf /data/local/radare2");
 								// remove old symlinks in case they exist in old location
-								mUtils.exec("rm -r /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc");
+								mUtils.exec("rm -rf /system/xbin/radare2 /system/xbin/r2 /system/xbin/rabin2 /system/xbin/radiff2 /system/xbin/ragg2 /system/xbin/rahash2 /system/xbin/ranal2 /system/xbin/rarun2 /system/xbin/rasm2 /system/xbin/rax2 /system/xbin/rafind2 /system/xbin/ragg2-cc");
 
 								if (RootTools.exists("/data/data/org.radare.installer/radare2/bin/radare2")) {
 
