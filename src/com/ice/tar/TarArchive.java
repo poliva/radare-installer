@@ -568,89 +568,94 @@ TarArchive extends Object
 				}
 			else
 				{
-				boolean asciiTrans = false;
 
-				FileOutputStream out =
-					new FileOutputStream( destFile );
+				try {
+					boolean asciiTrans = false;
 
-				if ( this.asciiTranslate )
-					{
-					MimeType mime = null;
-					String contentType = null;
+					FileOutputStream out =
+						new FileOutputStream( destFile );
 
-					try {
-						contentType =
-							FileTypeMap.getDefaultFileTypeMap().
-								getContentType( destFile );
+					if ( this.asciiTranslate )
+						{
+						MimeType mime = null;
+						String contentType = null;
 
-						mime = new MimeType( contentType );
+						try {
+							contentType =
+								FileTypeMap.getDefaultFileTypeMap().
+									getContentType( destFile );
 
-						if ( mime.getPrimaryType().
-								equalsIgnoreCase( "text" ) )
-							{
-							asciiTrans = true;
-							}
-						else if ( this.transTyper != null )
-							{
-							if ( this.transTyper.isAsciiFile( entry.getName() ) )
+							mime = new MimeType( contentType );
+
+							if ( mime.getPrimaryType().
+									equalsIgnoreCase( "text" ) )
 								{
 								asciiTrans = true;
 								}
-							}
-						}
-					catch ( MimeTypeParseException ex )
-						{ }
-
-					if ( this.debug )
-						{
-						System.err.println
-							( "EXTRACT TRANS? '" + asciiTrans
-								+ "'  ContentType='" + contentType
-								+ "'  PrimaryType='" + mime.getPrimaryType()
-								+ "'" );
-						}
-					}
-
-				PrintWriter outw = null;
-				if ( asciiTrans )
-					{
-					outw = new PrintWriter( out );
-					}
-
-				byte[] rdbuf = new byte[32 * 1024];
-
-				for ( ; ; )
-					{
-					int numRead = this.tarIn.read( rdbuf );
-
-					if ( numRead == -1 )
-						break;
-					
-					if ( asciiTrans )
-						{
-						for ( int off = 0, b = 0 ; b < numRead ; ++b )
-							{
-							if ( rdbuf[ b ] == 10 )
+							else if ( this.transTyper != null )
 								{
-								String s = new String
-									( rdbuf, off, (b - off) );
-
-								outw.println( s );
-
-								off = b + 1;
+								if ( this.transTyper.isAsciiFile( entry.getName() ) )
+									{
+									asciiTrans = true;
+									}
 								}
 							}
-						}
-					else
-						{
-						out.write( rdbuf, 0, numRead );
-						}
-					}
+						catch ( MimeTypeParseException ex )
+							{ }
 
-				if ( asciiTrans )
-					outw.close();
-				else
-					out.close();
+						if ( this.debug )
+							{
+							System.err.println
+								( "EXTRACT TRANS? '" + asciiTrans
+									+ "'  ContentType='" + contentType
+									+ "'  PrimaryType='" + mime.getPrimaryType()
+									+ "'" );
+							}
+						}
+
+					PrintWriter outw = null;
+					if ( asciiTrans )
+						{
+						outw = new PrintWriter( out );
+						}
+
+					byte[] rdbuf = new byte[32 * 1024];
+
+					for ( ; ; )
+						{
+						int numRead = this.tarIn.read( rdbuf );
+
+						if ( numRead == -1 )
+							break;
+						
+						if ( asciiTrans )
+							{
+							for ( int off = 0, b = 0 ; b < numRead ; ++b )
+								{
+								if ( rdbuf[ b ] == 10 )
+									{
+									String s = new String
+										( rdbuf, off, (b - off) );
+
+									outw.println( s );
+
+									off = b + 1;
+									}
+								}
+							}
+						else
+							{
+							out.write( rdbuf, 0, numRead );
+							}
+						}
+
+					if ( asciiTrans )
+						outw.close();
+					else
+						out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				}
 			}
 		}
