@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
+    <uses-permission android:name="jackpal.androidterm.permission.APPEND_TO_PATH" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -35,6 +36,11 @@
         <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".PathReceiver">
+            <intent-filter>
+                <action android:name="jackpal.androidterm.broadcast.APPEND_TO_PATH" />
             </intent-filter>
         </receiver>
         <service android:name="UpdateCheckerService" android:process=":radare2UpdateCheck" android:icon="@drawable/icon" android:label="@string/service_name" />
