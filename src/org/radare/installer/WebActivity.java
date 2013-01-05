@@ -27,6 +27,8 @@ import org.apache.http.conn.util.InetAddressUtils;
 import com.stericson.RootTools.*;
 
 import android.util.Log;
+//import android.webkit.WebSettings;
+import android.webkit.WebChromeClient;
 
 public class WebActivity extends Activity {
 
@@ -92,11 +94,57 @@ public class WebActivity extends Activity {
 		if (RootTools.isProcessRunning("radare2")) {
 			webview = (WebView) findViewById(R.id.webview);
 			webview.setWebViewClient(new RadareWebViewClient());
+			webview.setWebChromeClient(new WebChromeClient());
 			webview.getSettings().setJavaScriptEnabled(true);
 			webview.getSettings().setBuiltInZoomControls(true);
 			webview.getSettings().setSupportZoom(true);
 			webview.getSettings().setUseWideViewPort(true);
 			webview.getSettings().setLoadWithOverviewMode(true);
+
+/*
+			webview.getSettings().setAllowFileAccess(true);
+			webview.getSettings().setDomStorageEnabled(true);
+			webview.getSettings().setJavaScriptEnabled(true);
+			webview.getSettings().setSupportMultipleWindows(true);
+			webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+			webview.getSettings().setAppCacheMaxSize(1024*1024*16);
+			String appCachePath = "/data/data/" + getPackageName() + "/cache/";
+			webview.getSettings().setAppCachePath(appCachePath);
+			webview.getSettings().setAllowFileAccess(true);
+			webview.getSettings().setAppCacheEnabled(true);
+			webview.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+			webview.getSettings().setDatabaseEnabled(true);
+			String databasePath = "/data/data/" + getPackageName() + "/databases/";
+			webview.getSettings().setDatabasePath(databasePath);
+			webview.getSettings().setGeolocationEnabled(true);
+			webview.getSettings().setSaveFormData(true);
+
+			webview.getSettings().setAllowContentAccess(true);
+			webview.getSettings().setAllowFileAccess(true);
+			//    webview.getSettings().setAllowFileAccessFromFileURLs(true);
+			//    webview.getSettings().setAllowUniversalAccessFromFileURLs(true);
+			webview.getSettings().setAppCacheEnabled(true);
+			webview.getSettings().setBuiltInZoomControls(true);
+			webview.getSettings().setDatabaseEnabled(true);
+			webview.getSettings().setDisplayZoomControls(true);
+			webview.getSettings().setDomStorageEnabled(true);
+			webview.getSettings().setEnableSmoothTransition(true);
+			webview.getSettings().setGeolocationEnabled(true);
+			webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+			webview.getSettings().setJavaScriptEnabled(true);
+			webview.getSettings().setLightTouchEnabled(true);
+			webview.getSettings().setLoadWithOverviewMode(true);
+			webview.getSettings().setLoadsImagesAutomatically(true);
+			webview.getSettings().setPluginsEnabled(true);
+			webview.getSettings().setSupportMultipleWindows(true);
+			webview.getSettings().setSupportZoom(true);
+			webview.getSettings().setUseWideViewPort(true);
+			webview.getSettings().setPluginState(android.webkit.WebSettings.PluginState.ON_DEMAND);
+
+			webview.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_OVERLAY);
+			webview.setScrollbarFadingEnabled(false);
+			webview.setHorizontalScrollBarEnabled(false);
+*/
 			webview.loadUrl("http://localhost:9090");
 			Log.v(TAG, "WebView started successfully");
 		} else {
