@@ -100,7 +100,8 @@ public class Utils {
 			File sdCard = Environment.getExternalStorageDirectory();
 			storagePath = sdCard.getAbsolutePath() + "/org.radare.installer/";
 		} else {
-			storagePath = "/data/data/org.radare.installer/";
+			//storagePath = "/data/data/org.radare.installer/";
+			storagePath = mContext.getApplicationInfo().dataDir;
 		}
 		return storagePath;
 	}
