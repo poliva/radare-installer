@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.radare.installer"
-      android:versionCode="20"
-      android:versionName="2.0">
+      android:versionCode="21"
+      android:versionName="2.1">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" android:label="radare2 installer" android:launchMode="singleInstance" android:configChanges="orientation|screenSize" />
-        <activity android:name=".WebActivity" android:label="radare2 web" android:launchMode="singleInstance" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".WebActivity" android:label="radare2 http" android:launchMode="singleInstance" android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity android:name=".LauncherActivity" android:label="radare2 console" android:excludeFromRecents="true" android:launchMode="singleInstance" />
 	<activity android:name=".SettingsActivity" android:label="radare2 settings" />
         <receiver android:name=".BootReceiver">

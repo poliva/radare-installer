@@ -202,4 +202,13 @@ public class Utils {
 		return radare_output.toString();
 	}
 
+	public void killradare() {
+		RootTools.useRoot = false;
+		if (RootTools.isProcessRunning("radare2")) {
+			RootTools.killProcess("radare2");
+		}
+	}
+
+
+
 }

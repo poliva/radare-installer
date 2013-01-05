@@ -56,6 +56,9 @@ public class LaunchActivity extends Activity {
 			if (open_mode.equals("web")) {
 				radiogroup.check(R.id.radiobutton_web);
 			}
+			if (open_mode.equals("browser")) {
+				radiogroup.check(R.id.radiobutton_browser);
+			}
 			if (open_mode.equals("console")) {
 				radiogroup.check(R.id.radiobutton_console);
 			}
@@ -88,6 +91,13 @@ public class LaunchActivity extends Activity {
 		}
 	}
 
+	@Override
+	public void onDestroy()
+	{
+		mUtils.killradare();
+		super.onDestroy();
+	}
+
 	public void addListenerOnButton() {
 
 		radiogroup = (RadioGroup) findViewById(R.id.radiogroup1);
@@ -111,6 +121,12 @@ public class LaunchActivity extends Activity {
 						Intent intent1 = new Intent(LaunchActivity.this, WebActivity.class);
 						intent1.putExtras(b);
 						startActivity(intent1);
+					break;
+					case R.id.radiobutton_browser :
+						mUtils.StorePref("open_mode","browser");
+						Intent intent3 = new Intent(LaunchActivity.this, WebActivity.class);
+						intent3.putExtras(b);
+						startActivity(intent3);
 					break;
 					case R.id.radiobutton_console :
 						mUtils.StorePref("open_mode","console");

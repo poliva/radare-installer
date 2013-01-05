@@ -52,7 +52,14 @@ android:padding="15dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:checked="true"
-			android:text="Web" />
+			android:text="WebView" />
+
+			<RadioButton
+			android:textColor="#ff000000"
+			android:id="@+id/radiobutton_browser"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Browser" />
 
 			<RadioButton
 			android:textColor="#ff000000"
