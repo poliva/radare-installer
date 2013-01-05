@@ -252,10 +252,13 @@ public class MainActivity extends Activity {
 						mUtils.exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar");
 						mUtils.exec("rm " + storagePath + "/radare2/tmp/radare2-android.tar.gz");
 
-						// make sure bin files are mUtils.executable
+						// make sure bin files are executable
 						mUtils.exec("chmod 755 /data/data/org.radare.installer/radare2/bin/*");
 						mUtils.exec("chmod 755 /data/data/org.radare.installer/radare2/bin/");
 						mUtils.exec("chmod 755 /data/data/org.radare.installer/radare2/");
+
+						// make sure lib files are readable by other apps (for webserver using -c=h)
+						mUtils.exec("chmod -R 755 /data/data/org.radare.installer/radare2/lib/");
 
 						// setup temp folder for r2
 						mUtils.exec("rm -rf /data/data/org.radare.installer/radare2/tmp/*");
