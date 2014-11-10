@@ -125,7 +125,8 @@ public class Utils {
 
 		if (cpuabi.matches(".*mips.*")) arch="mips";
 		if (cpuabi.matches(".*x86.*")) arch="x86";
-		if (cpuabi.matches(".*arm.*")) arch="arm";
+		if (cpuabi.matches(".*arm64.*")) arch="aarch64";
+		else if (cpuabi.matches(".*arm.*")) arch="arm";
 		return arch;
 	}
 
